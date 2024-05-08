@@ -1,0 +1,144 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "title": "bcRflow pipeline parameters",
+    "description": "Alignment and analysis pipeline quantifying B-Cell Receptor (BCR) repertoires from transcriptomic data",
+    "type": "object",
+    "definitions": {
+        "input_output_options": {
+            "type": "object",
+            "title": "Input/output options",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "required": ["input", "project_name", "species", "indir", "outdir"],
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "default": "./samplesList.csv",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Path to the file containing the list of samples (Important: file must be named samplesList.csv).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 4 columns, and a header row. See https://github.com/bts76-pitt/bcRflow for details.",
+                    "fa_icon": "fas fa-file-csv"
+                },
+                "project_name": {
+                    "type": "string",
+                    "default": "bcRflow",
+                    "description": "Name of the project."
+                },
+                "species": {
+                    "type": "string",
+                    "enum": ["hsa", "mmu"],
+                    "default": "hsa",
+                    "description": "Species. Should be one of 'hsa' (human) or 'mmu' (mouse)."
+                },
+                "indir": {
+                    "type": "string",
+                    "default": "./fastq",
+                    "format": "directory-path",
+                    "description": "Path to the directory containing the FASTQ files.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "outdir": {
+                    "type": "string",
+                    "default": "./bcRflow-out",
+                    "format": "directory-path",
+                    "description": "Path to the output directory.",
+                    "fa_icon": "fas fa-folder-open"
+                }
+            }
+        },
+        "mixcr_options": {
+            "type": "object",
+            "title": "MiXCR options",
+            "description": "Options specific to MiXCR processing.",
+            "required": ["is_sc", "imgt", "mixcr_license", "chain"],
+            "properties": {
+                "is_sc": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Set to true if samples are from 10X 5' GEX, false if bulk."
+                },
+                "imgt": {
+                    "type": "string",
+                    "enum": ["/ihome/drajasundaram/bts76/bcRflow/workflow/db/imgt.202214-2.sv8.json"],
+                    "default": "/ihome/drajasundaram/bts76/bcRflow/workflow/db/imgt.202214-2.sv8.json",
+                    "format": "file-path",
+                    "fa_icon": "fas fa-bezier-curve",
+                    "hidden": true,
+                    "description": "Path to the IMGT reference file."
+                },
+                "mixcr_license": {
+                    "type": "string",
+                    "default":"I.eyJ2IjoxNjk2NDQ1NTYyLCJlIjoxNjk2NTMyMTU4LCJtIjoiODI2MTdkYjEtNDExNC00NDAxLWEzY2EtOGUyODIxNmNkMDY0IzA1M2EwNDliZjdhOWUzNjJhZTg2YjJhN2MzZjJhMDg4M2YyMGJhMTljNDQ5ZWYxNDY3MDU5YjU0YTEyYTkxMTYiLCJsIjoiRS1KVUNBRktPS1hOSFlYQ0pVVEREWkRUT1ZLU0pTQUNWUklJUFlLVkhPSExYR0JYU0UifQ==.CPECUVF.CVBhCSzk/S3XLEnIPhI0QnYFmVw+SccrlCAWnIDkF8IWzKGYdiQLXOScZeYaqu99yra8vOphGs2ibmqY64Jp4udxbTJMTu3JqA+jDIuH99I3bp3YO0jguEd3xaZSDUo0b7hPSyXKsYhKLIDSvGTOlNdWA09fdVi+M14cfBTRu6+KqvKV3L5s6F/Rpk0R4vel8tRqUbU5aLbnFV0wuglqd9EjZ+OtRnoMWZkrHIddv7C4TLikR3p+ISpJ4eUuQOjDJ9RkEzW1pHPxFoUDyUr3Fw6i0LWM/JZ3veAYcIYYLO3iWA4ADSR03HoO9w++ML0WoUktdCcR69g+o4oxonSTQA==",
+                    "hidden": true,
+                    "description": "MiXCR license key."
+                },
+                "chain": {
+                    "type": "string",
+                    "enum": ["IGH"],
+                    "default": "IGH",
+                    "hidden": true,
+                    "description": "Chain of interest. Only currently accepted value is IGH."
+                }
+            }
+        },
+        "config_options": {
+            "type": "object",
+            "title": "Configuration options",
+            "description": "Pipeline configuration options.",
+            "required": ["custom_config_base", "memory", "threads", "cpus", "time", "tracedir"],
+            "properties": {
+                "custom_config_base": {
+                    "type": "string",
+                    "default": "../configs",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-users-cog",
+                    "hidden": true,
+                    "description": "Base directory for custom configuration files."
+                },
+                "memory": {
+                    "type": "string",
+                    "default": "32.GB",
+                    "hidden": true,
+                    "description": "Memory allocation for the process."
+                },
+                "threads": {
+                    "type": "integer",
+                    "default": 8,
+                    "hidden": true,
+                    "description": "Number of threads to use."
+                },
+                "cpus": {
+                    "type": "integer",
+                    "default": 4,
+                    "hidden": true,
+                    "description": "Number of CPUs to use."
+                },
+                "time": {
+                    "type": "string",
+                    "default":"12.h",
+                    "hidden": true,
+                    "description": "Time allocation for the process."
+                },
+                "tracedir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "./performance-info",
+                    "description": "Path to the directory for performance information."
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/mixcr_options"
+        },
+        {
+            "$ref": "#/definitions/config_options"
+        }
+    ]
+}
+
