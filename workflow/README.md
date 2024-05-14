@@ -243,10 +243,10 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Acknowledgments
 
 * []() Dhivyaa Rajasundaram, PhD
+* []() Michael Morikone, PhD
 * []() Fangping Mu, PhD
 * []() Wan-Yee Tang, PhD
 * []() Gary Kohanbash, PhD
-* []() Rubio et al: "A Nextflow pipeline for T-cell receptor repertoire reconstruction and analysis from RNA sequencing data", _ImmunoInformatics_, 2022
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
