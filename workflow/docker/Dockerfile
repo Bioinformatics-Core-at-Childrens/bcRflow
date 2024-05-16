@@ -28,7 +28,16 @@ ARG R_DEPS="c( \
     'ade4', \
     'phylobase', \
     'NAIR', \
-    'immunarch' \
+    'immunarch', \
+    'magrittr', \
+    'purrr', \
+    'circilize', \
+    'epitools', \
+    'igraph', \
+    'ggpubr', \
+    'vegan', \
+    'fpc', \
+    'stringdist' \
 )"
 
 ARG R_BIOC_DEPS="c( \
