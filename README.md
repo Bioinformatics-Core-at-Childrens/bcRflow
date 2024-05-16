@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow">
-    <img src="workflow/db/logo.png" alt="bcRflow logo" width="225" height="300">
+    <img src="workflow/db/logo.png" alt="bcRflow logo" width="225" height="275">
   </a>
 
 <h3 align="center">bcRflow</h3>
