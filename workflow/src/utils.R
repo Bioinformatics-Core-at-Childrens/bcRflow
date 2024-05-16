@@ -63,6 +63,13 @@ colors_blind <- c(
 custom_colors$discrete <- c(colors_dutch, colors_spanish, colors_blind)
 
 
+# Create a function to extract the first element of a comma-separated list
+extract_first_hit <- function(string) {
+  elements <- unlist(strsplit(string, ","))
+  first_element <- trimws(elements[1]) # Trim whitespace
+  return(first_element)
+}
+
 #### Draw Circos-Plot ####
 vj_circos <- function(.data) {
   group <- c(rep("IGHJ", nrow(.data)), rep("IGHV", ncol(.data)))
@@ -249,17 +256,30 @@ v_j_matrix <- function(.data, threshold = 3){
   return(v_j_counts)
 }
 
+# calculate kmer probability based on average CDR3 length in each group:
+## use only the seqs where CDR3.aa length == avg CDR3.aa length
+## (this method is similar to Platypus' approach w/ candidate sequences)
+logoplots_fun <- function(x) {
+  avg_cdr3_length <- mean(str_length(x$CDR3.aa)) %>% round
+  x_avg <- x[str_length(x$CDR3.aa) == avg_cdr3_length,]
+  plt <-
+    getKmers(x_avg, .k = avg_cdr3_length) %>% kmer_profile(.method = "prob") %>%  vis(.plot = "seq")
+  return(plt)
+}
 
-#### Clonal Expansion Index (CEI): #### 
-# clonal_expansion_index <- function(.data){
-#   raw <- .data[order(.data$Clones, decreasing = T),]
-#   total_clones <- sum(.data$Clones)
-#   r <- raw$Clones / total_clones
-#   cei = 0
-#   for(i in 1:length(r)){
-#     cei = cei + ((r[i] - (i/total_clones)) / total_clones)
-#   }
-#   return(cei)
-# }
-# immdata$data %>% length()
-# cei_stats <- lapply(immdata$data, clonal_expansion_index)
+# Clones per Kiloread (CPK) - Expansion Index:
+clones_per_kilo <- function(.data){
+  num_CDR3 <- nrow(.data)
+  sum_of_counts = sum(.data$Clones)
+  normalized_data = (num_CDR3 / sum_of_counts)
+}
+
+# function to calculate Levenshtein distance matrix within each cluster
+calculate_distance_matrix <- function(cluster_data) {
+  # Convert CDR3.aa sequences to matrix
+  aa_seqs <- as.matrix(as.AAbin(AAStringSet(cluster_data$CDR3.aa)))
+  # Calculate pairwise Levenshtein distance matrix
+  dist_matrix <- stringdistmatrix(cluster_data$CDR3.aa, cluster_data$CDR3.aa, method = "lv",useNames = "string")
+  return(dist_matrix)
+}
+

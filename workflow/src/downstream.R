@@ -137,13 +137,7 @@ immdata$meta <- tibble(imm.meta)
 # immdata$meta$Group <- factor(immdata$meta$Group)
 
 # Preprocessing MiXCR output:
-# Create a function to extract the first element of a comma-separated list
-extract_first_hit <- function(string) {
-  elements <- unlist(strsplit(string, ","))
-  first_element <- trimws(elements[1]) # Trim whitespace
-  return(first_element)
-}
-
+# extract the top hit for each V, D, J and C alignment:
 for (i in 1:length(immdata$data)) {
   immdata$data[[i]]$sample_id <- names(immdata$data)[i]
   immdata$data[[i]]$V.name <- sapply(immdata$data[[i]]$V.name, function(x) ifelse(length(unlist(strsplit(x, ","))) > 1, extract_first_hit(x), x))
@@ -160,7 +154,7 @@ data$group_id <- factor(data$group_id)
 # genes w/o mutations, just convert to NA:
 data[data == "region_not_covered"] <- NA
 
-# reshape data to include gene name and allele for CSR calculation:
+# reshape data to include a column of Vgene name and allele for CSR calculation:
 data$CloneID <- data$Clone.ID
 data$CloneID <- paste(data$sample_id, data$CloneID, sep = "_")
 data$vgene_allele <- str_extract(data$V.name, ".+?(?=\\x28)")
@@ -184,8 +178,8 @@ rownames(ighv_gu) <- ighv_gu$Names
 ighv_gu$Names <- NULL
 ighv_gu <- ighv_gu[rownames(ighv_gu)!= "NA",]
 
-##ComplexHeatmap:
-#annotation df:
+## ComplexHeatmap:
+# create column annotation df from Group metadata:
 ighv_annotation_df <-
   data.frame("Sample" = colnames(ighv_gu), "Group" = imm.meta[colnames(ighv_gu), "Group"])
 ighv_annotation_df$Group <- factor(ighv_annotation_df$Group)
@@ -206,16 +200,16 @@ group_cols <-
   colors_dutch[1:length(unique(ighv_annotation_df$Group))]
 names(group_cols) <- ighv_annotation_df$Group %>% unique()
 
-#drop rows with no mapped IGH-V gene
+# drop rows with no mapped IGH-V gene:
 ighv_gu <- ighv_gu[row.names(ighv_gu) != "NA", , drop = FALSE]
 
-#scale gene util counts:
+# scale & center gene util counts:
 ighv_gu <- scale(ighv_gu, center = T, scale = T)
 col_fun = colorRamp2(c(min(ighv_gu), 0 , max(ighv_gu)), c("blue", "white", "red"))
 
 ighv_gu <- ighv_gu[, ighv_annotation_df$Sample]
 
-#plot with ComplexHeatmap
+# plot with ComplexHeatmap:
 ighv_gu_heatmap <- Heatmap(
   column_title = "IGH-V Gene Usage",
   column_title_gp = gpar(fontsize = 29, fontface = "bold"),
@@ -235,7 +229,6 @@ ighv_gu_heatmap <- Heatmap(
     annotation_legend_param = list(fontsize = 20, labels_gp = gpar(fontsize = 20), title_gp = gpar(fontsize = 20, fontface = "bold"))
   ),
   column_labels = NULL,
-  #legend_label_dp = list(title_gp = gpar(fontsize = 20, fontface = "bold"),labels_gp = gpar(fontsize = 20)),
   row_names_gp = gpar(fontsize = 20, lwd = 2),
   column_names_gp = gpar(fontsize = 20, hjust = 0.5),
   heatmap_legend_param = list(
@@ -249,6 +242,7 @@ ighv_gu_heatmap <- Heatmap(
 )
 ighv_gu_heatmap
 
+# save the gene usage heatmap:
 tiff(
   "IGHV_gene_usage_heatmap.tiff",
   width = 16,
@@ -261,6 +255,7 @@ tiff(
 ighv_gu_heatmap
 dev.off()
 
+## TODO: Users should be able to set the reference level of Group meta
 # #Odds ratio vs Healthy:
 # vgene_usage <-  geneUsage(immdata$data, paste0(species, ".ighv"))
 # vgene_usage <- vgene_usage %>% replace(is.na(.), 0) %>% data.frame()
@@ -425,7 +420,8 @@ dev.off()
 # dev.off()
 
 #####################################################
-#V-J Gene Usage:
+# V-J paired gene usage chord plots:
+## custom fx, see utils.R. Threshold is minimum number of hits required to plot gene, simplifies the chords.
 v_j_counts <- lapply(immdata$data, function(x){v_j_matrix(x, threshold = 5)})
 
 #plot the chords:
@@ -437,6 +433,8 @@ for(i in 1:length(v_j_counts)){
 
 #####################################################
 #Somatic Hyper Mutation (SHM):
+## Calculate the number of mutations compared to Germline using Immunarch:
+## Note: repGermline can only run on one thread - there's a known bug with the multithreading.
 shm <- immdata$data %>%
   seqCluster(seqDist(immdata$data), .fixed_threshold = 3) %>%
   repGermline(.threads = 1) %>%
@@ -444,17 +442,17 @@ shm <- immdata$data %>%
   repClonalFamily(.threads = 4, .nofail = TRUE) %>%
   repSomaticHypermutation(.threads = 4, .nofail = TRUE)
 
-# Create an empty list to store the merged data frames
+# Create an empty list to store the merged data frames of mut counts:
 merged_list <- list()
 
-# Iterate over each pair of data frames in the lists and merge them
+# Iterate over each pair of data frames in the lists and merge them:
 for (key in names(shm)) {
   merged_data <- merge(shm[[key]], immdata$data[[key]], by = "Clone.ID", all.x = TRUE)
   merged_list[[key]] <- merged_data
 }
 merged_list <- do.call(rbind, merged_list)
 
-# estimate mutation rate
+# Estimate mutation rate over clonal nucleotide seq w/o CDR3
 merged_list <- merged_list %>%
   mutate(Mutation.Rate = Mutations / (nchar(Sequence.x) - nchar(CDR3.nt.x)))
 
@@ -471,10 +469,13 @@ shm_rate <-
     "SHM.count" = merged_list$Mutations,
     "Sequence.length" =  str_length(merged_list$Sequence.x)
   )
+
+# drop NA values (div by 0?)
 shm_rate <- shm_rate[complete.cases(shm_rate),]
 shm_rate <- shm_rate %>% group_by(Sample, C.name) %>% summarize(Mutation.Rate = mean(SHM.rate))
 shm_rate$Group <- imm.meta[shm_rate$Sample, "Group"]
 
+# plot the SHM rates across groups, facet by C gene name:
 shm.plot <- shm_rate %>% ggplot(aes(x = Group, y = Mutation.Rate, color = Group)) +
   geom_hline(yintercept=0.01, linetype='dotted', col = 'red') +
   ylab("Rate") +
@@ -486,10 +487,11 @@ shm.plot <- shm_rate %>% ggplot(aes(x = Group, y = Mutation.Rate, color = Group)
   facet_wrap(~ C.name)+
   ggtitle("Somatic Hypermutation Rates", subtitle = "Immunarch repSomaticHypermutation")
 
+# save the SHM plot:
 tiff(
   "SHM_rates.tiff",
   width = 13,
-  height =10,
+  height = 10,
   bg = "white",
   units = "in",
   compression = "lzw",
@@ -501,7 +503,8 @@ shm.plot + theme_bw(base_size = 20) + theme(axis.text.x = element_text(angle = 9
 dev.off()
 
 #####################################################
-#CDR3 Length Distribution:
+# CDR3 Length Distribution:
+## extract CDR3 lengths across all groups
 data %>% ggplot(aes(
   x = str_length(CDR3.aa),
   y = ..density..,
@@ -510,6 +513,7 @@ data %>% ggplot(aes(
   scale_fill_manual(values = group_cols, name = "Group")&
   theme_classic() & scale_y_continuous(labels = scales::percent) & scale_x_binned(n.breaks = 30)
 
+# violin plot of CDR3 AA length, split by Group meta:
 cdr3.violin <-
   data %>% ggplot(aes(
     x = group_id,
@@ -520,6 +524,7 @@ cdr3.violin <-
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ggtitle("CDR3 Length Distribution")
 cdr3.violin
 
+# save the CDR3 length plot:
 tiff(
   "CDR3_length_distribution.tiff",
   width = 8,
@@ -530,28 +535,19 @@ tiff(
   res = 300
 )
 cdr3.violin + ggtitle("CDR3 Length Distribution") + theme_bw(base_size = 20) +
-  geom_violin() +
-  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) + # add quants to vln plot
   scale_fill_manual(values = group_cols, name = "Group") + ylab("CDR3 Length") + xlab(NULL)  +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(panel.grid.major = element_blank(),
                                                                    panel.grid.minor = element_blank())
 dev.off()
 
-#logo plot of CDR3 region across groups:
-#split data by group:
+## Logo plot of CDR3 region across groups:
+# split data by group:
 data_split <- group_split(data, group_id, .keep = TRUE)
-names(data_split)  <- data$group_id %>% unique() %>% sort()
-
-#calculate kmer probability based on average CDR3 length:
-logoplots_fun <- function(x) {
-  avg_cdr3_length <- mean(str_length(x$CDR3.aa)) %>% round
-  x_avg <- x[str_length(x$CDR3.aa) == avg_cdr3_length,]
-  plt <-
-    getKmers(x_avg, .k = avg_cdr3_length) %>% kmer_profile(.method = "prob") %>%  vis(.plot = "seq")
-  return(plt)
-}
+names(data_split)  <- data$group_id %>% unique() %>% sort() # immunarch sorts the group names alphabetically for some reason...
 logoplots <- lapply(data_split, logoplots_fun)
 
+# Save logo plots as a multi-page PDF:
 pdf(
   "CDR3_logoplots.pdf",
   width = 8,
@@ -575,13 +571,13 @@ dev.off()
 
 #####################################################
 #C-gene Isotype Distribution:
-if_2 <- data[!is.na(data$cgene), ]  |>
+if_2 <- data[!is.na(data$cgene), ]  %>%
   mutate(cgene = factor(cgene),
-         group_id = factor(group_id)) |>
+         group_id = factor(group_id)) %>%
   group_by(cgene, group_id) |>
-  summarise(n = sum(round(Clones), na.rm = TRUE)) |>
-  group_by(group_id) |>
-  mutate(pct = prop.table(n)) |>
+  summarise(n = sum(round(Clones), na.rm = TRUE)) %>%
+  group_by(group_id) %>%
+  mutate(pct = prop.table(n)) %>%
   ggplot(aes(pct, cgene, fill = group_id)) +
   geom_col(position = "dodge") +
   ggtitle("Isotype Frequency: Per Group") +
@@ -609,6 +605,7 @@ imm_top <-
   repClonality(immdata$data,
                .method = "top",
                .head = c(10, 100, 1000, 3000, 10000))
+
 imm_top.plt <- vis(imm_top, .by = "Group", .meta = immdata$meta) +
   scale_fill_manual(values = group_cols) + xlab(NULL) &
   theme_bw(base_size = 20) +
@@ -622,7 +619,8 @@ imm_top.plt <- vis(imm_top, .by = "Group", .meta = immdata$meta) +
         panel.grid.minor = element_blank()) 
 imm_top.data <- imm_top.plt$data
 imm_top.data$Group <- factor(imm_top.data$Group)
-imm_top.plt$data %>% ggplot(aes(x = Grouping.var, y = Value, fill = Group)) + geom_bar(stat="identity", position = "dodge")
+imm_top.plt$data %>% ggplot(aes(x = Grouping.var, y = Value, fill = Group)) +
+geom_bar(stat="identity", position = "dodge")
 
 tiff(
   "rep_clonality.tiff",
@@ -637,19 +635,19 @@ dev.off()
 
 #####################################################
 # Diversity Metrics - immunarch and vegan:
-# Chao1 diversity measure
+# Chao1 richness measure:
 div_chao <- repDiversity(immdata$data, "chao1")
 
-# Hill numbers
+# Hill numbers:
 div_hill <- repDiversity(immdata$data, "hill")
 
-# D50
+# D50:
 div_d50 <- repDiversity(immdata$data, "d50")
 
-# Ecological diversity measure
+# Ecological diversity measure "true diversity":
 div_div <- repDiversity(immdata$data, "div")
 
-#Gini coef:
+# Gini coefficient:
 ginic = repDiversity(immdata$data, "gini")
 ginic = data.frame(Gini = ginic[,1], Sample = row.names(ginic))
 ginic$Group <- imm.meta[ginic$Sample, "Group"]
@@ -681,7 +679,7 @@ ginic_plot <- ginic_plot + geom_signif(
 )
 ginic_plot
 
-#Gini-Simpson index:
+# Gini-Simpson index:
 gini_simp_plot <- repDiversity(
   immdata$data,
   .method = "gini.simp",
@@ -693,7 +691,7 @@ gini_simp_plot <- repDiversity(
   xlab(NULL) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 gini_simp_plot 
 
-#Inverse Simpson index:
+# Inverse Simpson index:
 inv_simpson_plt <- repDiversity(
   immdata$data,
   .method = "inv.simp",
@@ -705,8 +703,8 @@ inv_simpson_plt <- repDiversity(
   xlab(NULL) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
 inv_simpson_plt 
 
-#Repertoire Overlap:
-#Morisita-Horn:
+## Repertoire Overlap:
+# Morisita-Horn:
 mhorn_plt <- repOverlap(
   data_split,
   .method = "morisita",
@@ -714,7 +712,7 @@ mhorn_plt <- repOverlap(
   theme_bw(base_size = 20) + xlab(NULL) + ylab(NULL) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 mhorn_plt
 
-#Jaccard:
+# Jaccard:
 jaccard_plt <- repOverlap(
   data_split,
   .method = "jaccard",
@@ -722,7 +720,7 @@ jaccard_plt <- repOverlap(
   theme_bw(base_size = 20) + xlab(NULL) + ylab(NULL) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 jaccard_plt
 
-#Cosine Similarity:
+# Cosine Similarity:
 cosine_plt <- repOverlap(
   data_split,
   .method = "cosine",
@@ -730,7 +728,7 @@ cosine_plt <- repOverlap(
   theme_bw(base_size = 20) + xlab(NULL) + ylab(NULL) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 cosine_plt
 
-#Clonality - immunarch:
+# Repertoire Clonality - immunarch:
 imm_hom <- repClonality(immdata$data,
                         .method = "homeo",
                         .clone.types = c(Small = .0001, Medium = .001, Large = .01, Hyperexpanded = 1) 
@@ -741,13 +739,6 @@ imm_hom <- repClonality(immdata$data,
         panel.grid.minor = element_blank()) +
   xlab(NULL) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 imm_hom
-
-#Clones per Kiloread (CPK) - Expansion Index:
-clones_per_kilo <- function(.data){
-  num_CDR3 <- nrow(.data)
-  sum_of_counts = sum(.data$Clones)
-  normalized_data = (num_CDR3 / sum_of_counts)
-}
 
 cpk_stats <- lapply(immdata$data, clones_per_kilo) %>% unlist() %>% data.frame()
 cpk_stats$Group <- imm.meta[rownames(cpk_stats),"Group"] %>% factor(.)
@@ -784,7 +775,7 @@ cpk_plt <- cpk_plt + geom_signif(
 )
 cpk_plt
 
-#Pielou evenness- vegan package
+# Pielou evenness- vegan package
 Pielou <- function(.data){
   mtx <- .data[,c("Clone.ID","Clones")] %>% pivot_wider(names_from = "Clone.ID", values_from = "Clones")
   H <- diversity(mtx)
@@ -820,7 +811,7 @@ Pielou_plt <- Pielou_index %>% ggplot(aes(x = Group, y = Pielou, fill = Group)) 
 )
 Pielou_plt
 
-#ACE index - vegan package:
+# ACE index - vegan package:
 ACE <- function(.data) {
   mtx <-
     .data[, c("Clone.ID", "Clones")] %>% pivot_wider(names_from = "Clone.ID", values_from = "Clones")
@@ -839,6 +830,7 @@ ACE_plt <- ACE_index %>% ggplot(aes(x = Group, y = S.ACE, fill = Group)) +
   xlab(NULL) +
   ylab("ACE") + theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   ggtitle("ACE Index") 
+
 comparisons <- combn(unique(ACE_index$Group), 2)
 p_df <- compare_means(S.ACE ~ Group, ACE_index, comparisons = comparisons, p.adjust.method = "holm")
 y_max <- max(ACE_index$S.ACE)
@@ -859,7 +851,7 @@ ACE_plt <- ACE_plt + geom_signif(
 )
 ACE_plt
 
-#Shannon index - vegan package:
+# Shannon index - vegan package:
 Shannon <- function(.data){
   mtx <- .data[,c("Clone.ID","Clones")] %>% pivot_wider(names_from = "Clone.ID", values_from = "Clones")
   H <- diversity(mtx)
@@ -899,8 +891,7 @@ Shannon_plt <- Shannon_plt + geom_signif(
 )
 Shannon_plt
 
-
-#Immunarch diversity calculations:
+# Plotting calculated Immunarch diversity metrics:
 chao_plt <-
   vis(div_chao, .by = "Group", .meta = immdata$meta) + scale_fill_manual(values = group_cols) + 
   theme_bw(base_size = 20) +
@@ -936,7 +927,7 @@ eco_div_plt <-
   xlab(NULL) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 eco_div_plt
 
-#Save the diversity metric plots:
+#Save all of the diversity metric plots:
 tiff("./diversity/chao.tiff", width = 8, height = 6, units = "in", bg = "white", compression = "lzw", res = 300)
 print(chao_plt)
 dev.off()
@@ -998,7 +989,9 @@ imm_hom
 dev.off()
 
 #####################################################
-#Network Analysis of Clones:
+# Convergent clustering / network analysis of CDR3 sequences:
+## Step 1: Group clones (regardless of Group) based on V/J genes, CDR3.aa length
+## Step 2: Calculate Levenshtein distance between grouped CDR3 sequences
 network_dist <-
   seqDist(
     list("network"=data),
@@ -1009,33 +1002,16 @@ network_dist <-
     .group_by = c('V.name', 'J.name')
   )
 
-network_dist_sub <- network_dist$network
-
-network_dist_sub <-
-  network_dist_sub[which(lapply(
-    X = network_dist_sub,
-    FUN = function(x) {
-      length(x) > 0
-    }
-  ) %>% unlist)]
-network_dist_sub <-
-  lapply(network_dist_sub, function(x) {
-    x = data.frame(as.matrix(x))
-    x$pair = rownames(x)
-    y = x %>% pivot_longer(cols = colnames(x)[colnames(x) != "pair"])
-    colnames(y) = c("pair", "original", "distance")
-    return(y)
-  })
-
-network_dist_sub <- do.call(rbind, network_dist_sub)
-network_dist_sub <- network_dist_sub[network_dist_sub$distance > 0,]
-
+# Step 3: Cluster the grouped CDR3 sequences
 network_clust <- seqCluster(list("network"=data), network_dist, .perc_similarity = 0.7)
 network <- network_clust$network
 clusters <- table(network$Cluster)
+
+# Step 4: select all of the large clusters (>= 10 clones):
 clusters <- clusters[clusters >= 10]
 network <- network[network$Cluster %in% names(clusters),]
 
+# Plot the large clusters (bar plot):
 network_clusters <- network %>% ggplot(aes(
   x = reorder(Cluster, Cluster,
               function(x)
@@ -1058,15 +1034,7 @@ tiff(
 network_clusters
 dev.off()
 
-# function to calculate Levenshtein distance matrix within each cluster
-calculate_distance_matrix <- function(cluster_data) {
-  # Convert CDR3.aa sequences to matrix
-  aa_seqs <- as.matrix(as.AAbin(AAStringSet(cluster_data$CDR3.aa)))
-  # Calculate pairwise Levenshtein distance matrix
-  dist_matrix <- stringdistmatrix(cluster_data$CDR3.aa, cluster_data$CDR3.aa, method = "lv",useNames = "string")
-  return(dist_matrix)
-}
-
+# Step 5: Networks analysis of large clusters:
 # Split the data frame into groups based on the "Cluster" column
 cluster_groups <- network %>% 
   group_split(Cluster)
@@ -1152,7 +1120,6 @@ clones[!is.na(clones$Cluster), "Cluster"] <-
   paste0(clones[!is.na(clones$Cluster), "group_id"], "_", clones[!is.na(clones$Cluster), "Cluster"])
 clones <- clones[!is.na(clones$Cluster),]
 
-View(clones)
 #subset to desired columns only:
 clones <-
   clones[, c(
@@ -1168,7 +1135,8 @@ clones <-
     "V.seq"
   )]
 
-#note: dnapars is available w/ the BrepPhylo package, but only works with Linux!
+# note: dnapars is available w/ the BrepPhylo package, but only works with Linux!
+## TODO: detect user's system (linux, windows, etc. and change underlying arbo calc accordingly...)
 dnapars_executable <-
   system.file("exe/dnapars", package = "BrepPhylo")
 outputFolder <- path.expand("./CSR_batchAnalysis")
@@ -1180,13 +1148,14 @@ if (species == "mmu") {
 }
 clones <- clones[complete.cases(clones),]
 
+# extract IGH-C subclass:
 clones$Subclass <- str_replace(clones$cgene, "IGH", "")
 clones$Class <- clones$Subclass %>% gsub('[0-9.]', '', .)
 clones <- clones %>% data.frame()
 
 clones$Cluster <- clones$Cluster %>% str_replace_all("-", "_")
 
-#clonal lineage analysis:
+# clonal lineage analysis:
 clones$CloneID <- clones$Cluster
 batch_results <- doBatchCloneAnalysis(
   clones,
@@ -1201,7 +1170,7 @@ batch_results <- doBatchCloneAnalysis(
   useTempDir = TRUE,
   minCloneSize = 3
 )
-#stop if BrepPhylo fails:
+# stop if BrepPhylo fails:
 if (length(unlist(batch_results)) == 0) {
   save.image("downstream.RData")
   stop(
@@ -1209,7 +1178,7 @@ if (length(unlist(batch_results)) == 0) {
   )
 }
 
-#group CSR events by Group metadata:
+# organize CSR events by Group metadata:
 batch_summary <- getSummaryFromBatch(batch_results)
 batch_summary.csr <- batch_summary$csr_events
 batch_summary.csr$Group <-
@@ -1223,12 +1192,12 @@ germlineDistance_summary <- summariseGermlineDistance(
   summarise_variables = c( "Group", "CloneID" ) 
 )
 
-# we can plot this as a curve to show the overall distribution
-#library(ggplot2)
-ggplot(germlineDistance_summary, aes(x = dist_median, y = clone_order, 
-                                     group = Group, colour = Group)) +
-  geom_line() + scale_colour_discrete(name = "") + cowplot::theme_cowplot() +
-  xlab("median distance from germline") + ylab("clone percentile")
+## we can plot this as a curve to show the overall distribution
+##library(ggplot2)
+#ggplot(germlineDistance_summary, aes(x = dist_median, y = clone_order, 
+#                                     group = Group, colour = Group)) +
+#  geom_line() + scale_colour_discrete(name = "") + cowplot::theme_cowplot() +
+#  xlab("median distance from germline") + ylab("clone percentile")
 
 #summarize CSR events:
 csr_summary <- summariseCSR(
@@ -1258,6 +1227,7 @@ CSR_plot <- plotCSRsummary(csr_summary) + facet_wrap( ~ Group) +
 CSR_plot + theme_bw(base_size = 20) + theme(panel.grid.major = element_blank(),
                                             panel.grid.minor = element_blank())
 
+# save the CSR plot:
 tiff(
   "CSR_events.tiff",
   width = 9,
@@ -1272,5 +1242,5 @@ CSR_plot + theme_bw(base_size = 20) + theme(panel.grid.major = element_blank(),
 dev.off()
 
 #####################################################
-#save the environment!
+# save the environment!
 save.image("downstream.RData")
