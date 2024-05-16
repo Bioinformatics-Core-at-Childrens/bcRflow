@@ -10,5 +10,5 @@
 #SBATCH --mail-user=your_email@sample.com
 
 module load singularity/3.9.6 nextflow/23.04.2 squashfs-tools/4.4 gcc/12.2.0 r/4.3.0
-cd BCR_nextflow
+cd bcRflow/workflow
 nextflow run ./main.nf -profile slurm -resume -work-dir ./work
