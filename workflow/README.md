@@ -84,7 +84,7 @@
 ## About The Project
 
 * The bcRflow pipeline was developed and is maintained by Brent T. Schlegel, Analyst at the Bioinformatics Core @ the UPMC Children's Hospital of Pittsburgh (2023).
-It was inspired by the work of Rubio et. al (A Nextflow pipeline for T-cell receptor repertoire reconstruction and analysis from RNA sequencing data,
+It was inspired in part by the work of Rubio et. al (A Nextflow pipeline for T-cell receptor repertoire reconstruction and analysis from RNA sequencing data,
 ImmunoInformatics,2022) and their subsequent MiXCR-based pipeline for extracting TCR repertoires from bulk RNA-seq data (https://github.com/ConesaLab/TCR_nextflow).
 
 * The use of MiXCR and IMGT in this pipeline are for strictly non-commerical, academic purposes.
@@ -243,10 +243,10 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Acknowledgments
 
 * []() Dhivyaa Rajasundaram, PhD
+* []() Michael Morikone, PhD
 * []() Fangping Mu, PhD
 * []() Wan-Yee Tang, PhD
 * []() Gary Kohanbash, PhD
-* []() Rubio et al: "A Nextflow pipeline for T-cell receptor repertoire reconstruction and analysis from RNA sequencing data", _ImmunoInformatics_, 2022
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
