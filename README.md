@@ -21,4 +21,6 @@
   </p>
 </div>
 
-Welcome to the bcRflow landing page! Please see the Workflow folder for detailed documentation, usage, and acknowledgements.
+<p align="center">
+Welcome to the bcRflow landing page! This pipeline was developed at the Bioinformatics Core through the University of Pittsburgh Department of Pediatrics, Division of Health Informatics. Please see the Workflow folder for detailed documentation, usage, and acknowledgements.
+</p>
