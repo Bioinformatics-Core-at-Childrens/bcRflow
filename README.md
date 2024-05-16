@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/bts76-pitt/bcRflow">
+  <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/workflow">
     <img src="workflow/db/logo.png" alt="bcRflow logo" width="450" height="500">
   </a>
 
@@ -10,14 +10,14 @@
   <p align="center">
     A Computational Pipeline for the Comprehensive and Reproducible Analysis of B-Cell Receptor Repertoires from Non-Targeted Transcriptomic Data.
     <br />
-    <a href="https://github.com/bts76-pitt/bcRflow"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/workflow"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/bts76-pitt/bcRflow">View Demo</a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/workflow">View Demo</a>
     ·
-    <a href="https://github.com/bts76-pitt/bcRflow/issues">Report Bug</a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues">Report Bug</a>
     ·
-    <a href="https://github.com/bts76-pitt/bcRflow/issues">Request Feature</a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues">Request Feature</a>
   </p>
 </div>
 
