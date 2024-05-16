@@ -1,26 +1,3 @@
-library(ComplexHeatmap)
-library(viridisLite)
-library(colorRamp2)
-library(immunarch)
-library(BrepPhylo)
-library(Platypus)
-library(magrittr)
-library(purrr)
-library(optparse)
-library(circlize)
-library(epitools)
-library(ggplot2)
-library(stringr)
-library(igraph)
-library(ggpubr)
-library(dplyr)
-library(tidyr)
-library(vegan)
-library(fpc)
-library(stringdist)
-library(NAIR)
-source("/ihome/drajasundaram/bts76/bcRflow/workflow/src/utils.R")
-
 ######################################################################################################
 #                                                                                                    #
 # ░▒▓███████▓▒░ ░▒▓██████▓▒░░▒▓███████▓▒░░▒▓████████▓▒░▒▓█▓▒░      ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░ #
@@ -33,7 +10,10 @@ source("/ihome/drajasundaram/bts76/bcRflow/workflow/src/utils.R")
 #                                                                                                    #
 ######################################################################################################
 
-#read in user input:
+# load packages, load custom functions to environment:
+source("./utils.R")
+
+# read in user input:
 option_list <- list(
   make_option(
     c("-r", "--reports"),
@@ -51,7 +31,7 @@ option_list <- list(
     c("-m", "--metadata"),
     type = "character",
     default = file.path("./samplesList.csv"),
-    #points to symLink of metadata table, file must be named samplesList.csv!
+    # points to symLink of metadata table in working dir, file must be named samplesList.csv!
     help = "Path to sample metadata table [default %default]"
   ),
   make_option(
@@ -63,7 +43,7 @@ option_list <- list(
 )
 arguments <- parse_args(OptionParser(option_list = option_list))
 
-#argument handling:
+# argument handling:
 species <- arguments$species
 valid_species <- c("hsa", "mmu")
 stopifnot(species %in% valid_species)
@@ -72,14 +52,14 @@ outdir <- file.path(arguments$output_dir)
 metadata <- read.csv(arguments$metadata)
 stopifnot(nrow(metadata) > 0)
 
-#check if there's group metadata:
+# check if there's group metadata:
 if (is.null(metadata$Group) |
     length(metadata$Group) != nrow(metadata)) {
   stop("Group metadata is missing or incomplete! Please check, and try again.")
 }
 rownames(metadata) <- metadata$SampleID
 
-#check and create output directory:
+# check and create output directory:
 if (!dir.exists(outdir)) {
   dir.create(outdir, showWarnings = T)
 } else {
@@ -87,35 +67,35 @@ if (!dir.exists(outdir)) {
 }
 setwd(outdir)
 
-#reformatted dir for reshaped MiXCR output:
+# reformatted dir for reshaped MiXCR output:
 if (!dir.exists(file.path("./reformatted"))){
   dir.create(file.path("./reformatted"), showWarnings = T)
 } else {
   print("Reformatted directory already exists...")
 }
 
-#diversity dir for diversity metric figures:
+# diversity dir for diversity metric figures:
 if (!dir.exists(file.path("./diversity"))){
   dir.create(file.path("./diversity"), showWarnings = T)
 } else {
   print("Diversity directory already exists...")
 }
 
-#chord dir for V-J usage chord plots:
+# chord dir for V-J usage chord plots:
 if (!dir.exists(file.path("./chords"))){
   dir.create(file.path("./chords"), showWarnings = T)
 } else {
   print("Chords directory already exists...")
 }
 
-#network dir for V-J usage network plots:
+# network dir for convergent network plots:
 if (!dir.exists(file.path("./network"))){
   dir.create(file.path("./network"), showWarnings = T)
 } else {
   print("Network directory already exists...")
 }
 
-#list MiXCR output reports:
+# list MiXCR output reports:
 IGH_reports <-
   list.files(
     file.path(arguments$reports),
@@ -124,7 +104,7 @@ IGH_reports <-
     recursive = T
   )
 
-#load data using Immunarch:
+# load data using Immunarch:
 immdata <- repLoad(file.path(IGH_reports))
 imm.meta <- metadata[, c("SampleID", "Group")]
 colnames(imm.meta) <-  c("Sample", "Group")
@@ -190,12 +170,12 @@ rownames(ighv_annotation_df) <- ighv_annotation_df$Sample
 immdata$data <- immdata$data[ighv_annotation_df$Sample]
 immdata$meta <- immdata$meta %>% arrange(match(Sample, rownames(ighv_annotation_df)))
 
-#sample colors:
+# sample colors:
 sample_cols <-
   custom_colors$discrete[1:length(unique(ighv_annotation_df$Sample))]
 names(sample_cols) <- ighv_annotation_df$Sample %>% unique()
 
-#group colors:
+# group colors:
 group_cols <-
   colors_dutch[1:length(unique(ighv_annotation_df$Group))]
 names(group_cols) <- ighv_annotation_df$Group %>% unique()
@@ -255,7 +235,7 @@ tiff(
 ighv_gu_heatmap
 dev.off()
 
-## TODO: Users should be able to set the reference level of Group meta
+## TODO: Users should be able to set the reference level of Group meta for Odds Ratio analyses:
 # #Odds ratio vs Healthy:
 # vgene_usage <-  geneUsage(immdata$data, paste0(species, ".ighv"))
 # vgene_usage <- vgene_usage %>% replace(is.na(.), 0) %>% data.frame()
@@ -427,7 +407,7 @@ v_j_counts <- lapply(immdata$data, function(x){v_j_matrix(x, threshold = 5)})
 #plot the chords:
 for(i in 1:length(v_j_counts)){
   tiff(paste0("./chords/",names(v_j_counts)[[i]],"_vj_chord.tiff"), width = 6, height = 6, bg = "white", units = "in", res =300, compression = "lzw")
-  suppressMessages(vj_circos(v_j_counts[[i]][[1]]))
+  suppressMessages(vj_circos(v_j_counts[[i]][[1]])) # custom circos plots, see utils.R
   dev.off()
 }
 
@@ -548,7 +528,7 @@ cdr3.violin + ggtitle("CDR3 Length Distribution") + theme_bw(base_size = 20) +
 dev.off()
 
 ## Logo plot of CDR3 region across groups:
-# split data by group:
+# split data df (all clones) by group:
 data_split <- group_split(data, group_id, .keep = TRUE)
 names(data_split)  <- data$group_id %>% unique() %>% sort() # immunarch sorts the group names alphabetically for some reason...
 logoplots <- lapply(data_split, logoplots_fun)
@@ -650,7 +630,7 @@ div_hill <- repDiversity(immdata$data, "hill")
 # D50:
 div_d50 <- repDiversity(immdata$data, "d50")
 
-# Ecological diversity measure "true diversity":
+# Ecological diversity measure, ie "true diversity":
 div_div <- repDiversity(immdata$data, "div")
 
 # Gini coefficient:
@@ -746,6 +726,7 @@ imm_hom <- repClonality(immdata$data,
   xlab(NULL) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 imm_hom
 
+# Clones per Kiloread (CPK):
 cpk_stats <- lapply(immdata$data, clones_per_kilo) %>% unlist() %>% data.frame()
 cpk_stats$Group <- imm.meta[rownames(cpk_stats),"Group"] %>% factor(.)
 cpk_stats$Sample <- rownames(cpk_stats)

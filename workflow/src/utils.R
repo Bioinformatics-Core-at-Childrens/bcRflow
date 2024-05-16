@@ -1,4 +1,27 @@
-#Custom color palette:
+# load required packages:
+library(ComplexHeatmap)
+library(viridisLite)
+library(colorRamp2)
+library(immunarch)
+library(BrepPhylo)
+library(Platypus)
+library(magrittr)
+library(purrr)
+library(optparse)
+library(circlize)
+library(epitools)
+library(ggplot2)
+library(stringr)
+library(igraph)
+library(ggpubr)
+library(dplyr)
+library(tidyr)
+library(vegan)
+library(fpc)
+library(stringdist)
+library(NAIR)
+
+# create custom discrete color palette:
 custom_colors <- list()
 
 colors_dutch <- c(
