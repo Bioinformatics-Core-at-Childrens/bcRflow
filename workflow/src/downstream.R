@@ -435,14 +435,20 @@ for(i in 1:length(v_j_counts)){
 #Somatic Hyper Mutation (SHM):
 ## Calculate the number of mutations compared to Germline using Immunarch:
 ## Note: repGermline can only run on one thread - there's a known bug with the multithreading.
+
+shm_species <- "HomoSapiens"
+if (species == "mmu") {
+  shm_species <- "MusMusculus"
+}
+
 shm <- immdata$data %>%
   seqCluster(seqDist(immdata$data), .fixed_threshold = 3) %>%
   repGermline(.threads = 1) %>%
   repAlignLineage(.min_lineage_sequences = 2, .align_threads = 4, .nofail = TRUE) %>%
   repClonalFamily(.threads = 4, .nofail = TRUE) %>%
-  repSomaticHypermutation(.threads = 4, .nofail = TRUE)
+  repSomaticHypermutation(.threads = 4, .nofail = TRUE, species = shm_species)
 
-# Create an empty list to store the merged data frames of mut counts:
+# Create an empty list to store the merged data frames of shm counts per sample:
 merged_list <- list()
 
 # Iterate over each pair of data frames in the lists and merge them:
@@ -468,7 +474,7 @@ shm_rate <-
     "SHM.rate"  = merged_list$Mutation.Rate,
     "SHM.count" = merged_list$Mutations,
     "Sequence.length" =  str_length(merged_list$Sequence.x)
-  )
+)
 
 # drop NA values (div by 0?)
 shm_rate <- shm_rate[complete.cases(shm_rate),]
@@ -485,7 +491,7 @@ shm.plot <- shm_rate %>% ggplot(aes(x = Group, y = Mutation.Rate, color = Group)
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_color_manual(values = group_cols, name = "Group") +
   facet_wrap(~ C.name)+
-  ggtitle("Somatic Hypermutation Rates", subtitle = "Immunarch repSomaticHypermutation")
+ggtitle("Somatic Hypermutation Rates", subtitle = "Immunarch repSomaticHypermutation")
 
 # save the SHM plot:
 tiff(
@@ -510,8 +516,8 @@ data %>% ggplot(aes(
   y = ..density..,
   fill = group_id
 )) + geom_histogram(bins = 30) + ggtitle("CDR3 Length Distribution") +xlab("CDR3aa Length") + ylab("Proportion") + facet_wrap(~group_id) &
-  scale_fill_manual(values = group_cols, name = "Group")&
-  theme_classic() & scale_y_continuous(labels = scales::percent) & scale_x_binned(n.breaks = 30)
+scale_fill_manual(values = group_cols, name = "Group")&
+theme_classic() & scale_y_continuous(labels = scales::percent) & scale_x_binned(n.breaks = 30)
 
 # violin plot of CDR3 AA length, split by Group meta:
 cdr3.violin <-
@@ -521,7 +527,7 @@ cdr3.violin <-
     fill = group_id
   )) + geom_violin() +
   scale_fill_manual(values = group_cols, name = "Group") + ylab("CDR3 Length") + xlab(NULL)  +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ggtitle("CDR3 Length Distribution")
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ggtitle("CDR3 Length Distribution")
 cdr3.violin
 
 # save the CDR3 length plot:

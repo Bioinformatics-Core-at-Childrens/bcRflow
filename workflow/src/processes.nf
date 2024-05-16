@@ -1,8 +1,10 @@
 // Bulk RNA-seq alignment, using IMGT reference
 process mixcr_align_bulk{
     cpus "$params.cpus"
-    time "$params.time"
-    memory "$params.memory"
+    memory { 8.GB * task.attempt }
+    time { 12.hour * task.attempt }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
 
     tag "$SampleID"
     label "mixcr" 
@@ -40,8 +42,10 @@ process mixcr_align_bulk{
 // 10X 5' GEX scRNA alignment, using IMGT reference
 process mixcr_align_10X_5p{
     cpus "$params.cpus"
-    memory "$params.memory"
-    time "$params.time"
+    memory { 8.GB * task.attempt }
+    time { 12.hour * task.attempt }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
 
     tag "$SampleID"
     label "mixcr" 
@@ -76,11 +80,13 @@ process mixcr_align_10X_5p{
     """
 }
 
-// TODO: 10X 3' GEX, not necessary to implement at this stage:
+// TODO: implement 10X 3' GEX, not necessary to implement at this stage:
 process mixcr_10X_3p_GEX{
     cpus "$params.cpus"
-    memory "$params.memory"
-    time "$params.time"
+    memory { 8.GB * task.attempt }
+    time { 12.hour * task.attempt }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
 
     tag "$SampleID"
     label "mixcr"
@@ -164,8 +170,11 @@ process mixcr_refineTags{
 // Partial assembly for short reads, round 1:
 process mixcr_assemblePartial_1{
     cpus "$params.cpus"
-    memory "$params.memory"
-    time "$params.time"
+    memory { 2.GB * task.attempt }
+    time { 3.hour * task.attempt }
+
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
 
     tag "$SampleID"
     label "mixcr"
@@ -196,8 +205,11 @@ process mixcr_assemblePartial_1{
 // Partial assembly for short reads, round 2:
 process mixcr_assemblePartial_2{
     cpus "$params.cpus"
-    memory "$params.memory"
-    time "$params.time"
+    memory { 2.GB * task.attempt }
+    time { 3.hour * task.attempt }
+
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
 
     tag "$SampleID"
     label "mixcr" 
@@ -227,9 +239,12 @@ process mixcr_assemblePartial_2{
 
 // Assemble partial assemblies into final assembly:
 process mixcr_assemble{
-       cpus "$params.cpus"
-    memory "$params.memory"
-    time "$params.time"
+    cpus "$params.cpus"
+    memory { 2.GB * task.attempt }
+    time { 3.hour * task.attempt }
+
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
 
     tag "$SampleID"
     label "mixcr"
@@ -263,8 +278,11 @@ process mixcr_assemble{
 // Assemble contigs:
 process mixcr_assembleContigs {
     cpus "$params.cpus"
-    memory "$params.memory"
-    time "$params.time"
+    memory { 2.GB * task.attempt }
+    time { 3.hour * task.attempt }
+
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
 
     tag "$SampleID"
     label "mixcr"
@@ -296,8 +314,11 @@ process mixcr_assembleContigs {
 // Export clones to standardized format:
 process mixcr_exportClones {
     cpus "$params.cpus"
-    memory "$params.memory"
-    time "$params.time"
+    memory { 2.GB * task.attempt }
+    time { 3.hour * task.attempt }
+
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
 
     tag "$SampleID"
     label "mixcr" 
