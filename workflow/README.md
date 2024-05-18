@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/bts76-pitt/bcRflow">
+  <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow">
     <img src="db/logo.png" alt="bcRflow logo" width="250" height="275">
   </a>
 
@@ -39,14 +39,14 @@
   <p align="center">
     A Computational Pipeline for the Comprehensive and Reproducible Analysis of B-Cell Receptor Repertoires from Non-Targeted Transcriptomic Data.
     <br />
-    <a href="https://github.com/bts76-pitt/bcRflow"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/bts76-pitt/bcRflow">View Demo</a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow">View Demo</a>
     ·
-    <a href="https://github.com/bts76-pitt/bcRflow/issues">Report Bug</a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues">Report Bug</a>
     ·
-    <a href="https://github.com/bts76-pitt/bcRflow/issues">Request Feature</a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues">Request Feature</a>
   </p>
 </div>
 
@@ -100,10 +100,10 @@ In order to obtain a non-commercial license to use MiXCR, please see: https://li
 
 ### Built With
 
-* ![image](https://github.com/bts76-pitt/bcRflow/assets/117182944/96b9b91e-0e96-4be6-a05d-e28a827c7595) MiXCR (4.6)
-* ![image](https://github.com/bts76-pitt/bcRflow/assets/117182944/5eff8819-0b17-42ff-8c46-d4402b11f75c) Nextflow (23.04.2, DSL2)
-* ![image](https://github.com/bts76-pitt/bcRflow/assets/117182944/0991b1f9-bdb7-4c15-9aca-0bcb92e73e00) R (4.3.0)
-* ![image](https://github.com/bts76-pitt/bcRflow/assets/117182944/ac034919-c597-4307-b394-2c2e825f749f) Docker / Docker Hub
+* ![image](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/assets/117182944/96b9b91e-0e96-4be6-a05d-e28a827c7595) MiXCR (4.6)
+* ![image](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/assets/117182944/5eff8819-0b17-42ff-8c46-d4402b11f75c) Nextflow (23.04.2, DSL2)
+* ![image](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/assets/117182944/0991b1f9-bdb7-4c15-9aca-0bcb92e73e00) R (4.3.0)
+* ![image](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/assets/117182944/ac034919-c597-4307-b394-2c2e825f749f) Docker / Docker Hub
 
 
 
@@ -140,7 +140,7 @@ To get a local copy up and running follow these simple example steps.
 1. Get a free MiXCR Academic License at [https://licensing.milaboratories.com/](https://licensing.milaboratories.com/)
 2. Clone the repo
    ```sh
-   git clone https://github.com/bts76-pitt/bcRflow.git
+   git clone https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow.git
    ```
 3. Install Nextflow: [https://www.nextflow.io/docs/latest/getstarted.html](https://www.nextflow.io/docs/latest/getstarted.html)
 4. Enter your MiXCR License in `nextflow.config`
@@ -200,7 +200,7 @@ To get a local copy up and running follow these simple example steps.
     - [ ] Variable Gene Usage (IGH-V and IGH-V/J pairs)
     - [ ] Clonal Network Analysis (NAIR)
 
-See the [open issues](https://github.com/bts76-pitt/bcRflow/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -235,7 +235,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 * Brent T. Schlegel - BTS76@pitt.edu
 
-* Project Link: [https://github.com/bts76-pitt/bcRflow](https://github.com/bts76-pitt/bcRflow)
+* Project Link: [https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -256,15 +256,15 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [Nextflow]: https://www.nextflow.io/
 [MiXCR]: https://mixcr.com/
 [contributors-shield]: https://img.shields.io/github/contributors/bts76-pitt/bcRflow.svg?style=for-the-badge
-[contributors-url]: https://github.com/bts76-pitt/bcRflow/graphs/contributors
+[contributors-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/bts76-pitt/bcRflow.svg?style=for-the-badge
-[forks-url]: https://github.com/bts76-pitt/bcRflow/network/members
+[forks-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/network/members
 [stars-shield]: https://img.shields.io/github/stars/bts76-pitt/bcRflow.svg?style=for-the-badge
-[stars-url]: https://github.com/bts76-pitt/bcRflow/stargazers
+[stars-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/stargazers
 [issues-shield]: https://img.shields.io/github/issues/bts76-pitt/bcRflow.svg?style=for-the-badge
-[issues-url]: https://github.com/bts76-pitt/bcRflow/issues
+[issues-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues
 [license-shield]: https://img.shields.io/github/license/bts76-pitt/bcRflow.svg?style=for-the-badge
-[license-url]: https://github.com/bts76-pitt/bcRflow/blob/master/LICENSE
+[license-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/brent-schlegel-539638173
 [product-screenshot]: images/screenshot.png
