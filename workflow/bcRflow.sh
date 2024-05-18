@@ -3,13 +3,18 @@
 #SBATCH -N 1 # Ensure that all cores are on one machine
 #SBATCH -t 0-12:00 #runtime in D-HH:MM
 #SBATCH --cpus-per-task=4 # Request that ncpus be allocated per process.
-#SBATCH --mem=64
+#SBATCH --mem=64G
 #SBATCH --output=./slurm_log/bcr-nf_%A.out
 #SBATCH -e ./slurm_log/bcr-nf_%A.err
 #SBATCH --mail-type=END
 #SBATCH --mail-user=your_email@sample.com
 
-module load singularity/3.9.6 nextflow/23.04.2 squashfs-tools/4.4 gcc/12.2.0
+unset TMPDIR
 
-cd bcRflow/workflow
+module purge
+module load squashfs-tools/4.4 gcc/12.2.0 nextflow/23.04.2 singularity/3.9.6
+export NXF_SINGULARITY_CACHEDIR=/path/to/bcRflow/singularity-images
+export SINGULARITY_CACHEDIR=/path/to/bcRflow/singularity-images
+
+cd /path/to/bcRflow/workflow
 nextflow run ./main.nf -profile slurm -resume -work-dir ./work
