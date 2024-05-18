@@ -176,7 +176,7 @@ bcRflow utilizes nf-core configurations for wide availability to run on multiple
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
-## Roadmap
+## Pipeline Framework
 
 - [ ] Nextflow Configuration and Submission
 - [ ] MiXCR Alignment and Assembly
