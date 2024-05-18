@@ -232,7 +232,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 * Brent T. Schlegel - BTS76@pitt.edu
-
+* Dhivyaa Rajasundaram - DHR11@pitt.edu
 * Project Link: [https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
