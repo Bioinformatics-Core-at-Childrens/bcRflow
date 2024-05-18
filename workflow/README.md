@@ -104,7 +104,6 @@ In order to obtain a non-commercial license to use MiXCR, please see: https://li
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
@@ -113,7 +112,7 @@ bcRflow utilizes nf-core configurations for wide availability to run on multiple
 ### Prerequisites
 * Nextflow >= 23.04.2
 * Docker or Singularity
-* JDK
+* squashfs-tools (available on most systems)
 * For HPC jobs, nodes require internet access for MiXCR license validation
   * Offline use:
     MiXCR requires internet access to periodically validate license key. For running MiXCR in the environment with restricted internet access, please add the following MiXCR IPs to the whitelist in the firewall settings:
