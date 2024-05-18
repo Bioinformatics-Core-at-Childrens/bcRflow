@@ -31,7 +31,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/bts76-pitt/bcRflow">
-    <img src="db/logo.png" alt="bcRflow logo" width="450" height="500">
+    <img src="db/logo.png" alt="bcRflow logo" width="250" height="275">
   </a>
 
 <h3 align="center">bcRflow</h3>
