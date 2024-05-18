@@ -177,7 +177,7 @@ To get a local copy up and running follow these simple example steps.
 
 * If using the Slurm workflow, adjust the script for your submission node accordingly, and submit:
   ```sh
-    cd ./bcRflow # enter the bcRflow directory
+    cd ./bcRflow/workflow # enter the bcRflow directory
     nextflow run ./main.nf -profile slurm -resume -work-dir ./work #set the relative paths according to your directory
   ```
 
@@ -195,10 +195,10 @@ To get a local copy up and running follow these simple example steps.
     - [ ] Export IGH clones
 - [ ] Downstream Analysis
     - [ ] Repertoire Diversity (Immunarch and Vegan)
+    - [ ] Variable Gene Usage (IGH-V and IGH-V/J pairs)
     - [ ] Somatic Hypermutation (MiXCR)
     - [ ] Class-Switch Recombination (BrepPhylo and DNApars)
-    - [ ] Variable Gene Usage (IGH-V and IGH-V/J pairs)
-    - [ ] Clonal Network Analysis (NAIR)
+    - [ ] Convergent Clustering and Clonal Networks (Shared Clonal Sequencees)
 
 See the [open issues](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues) for a full list of proposed features (and known issues).
 
