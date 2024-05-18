@@ -90,7 +90,7 @@ In order to obtain a non-commercial license to use MiXCR, please see: https://li
 
 * For inquiries or technical assistance, please open a new Issue.
 
-* __Any reproductions or publications utilizing this pipeline should attribute all proper credit for development to the Developer (see above).__
+* __Any reproductions or publications utilizing this pipeline should attribute all proper credit for development to the Development team (see above).__
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
