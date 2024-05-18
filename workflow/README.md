@@ -95,25 +95,20 @@ In order to obtain a non-commercial license to use MiXCR, please see: https://li
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 ### Built With
 
-* ![image](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/assets/117182944/96b9b91e-0e96-4be6-a05d-e28a827c7595) MiXCR (4.6)
-* ![image](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/assets/117182944/5eff8819-0b17-42ff-8c46-d4402b11f75c) Nextflow (23.04.2, DSL2)
-* ![image](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/assets/117182944/0991b1f9-bdb7-4c15-9aca-0bcb92e73e00) R (4.3.0)
-* ![image](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/assets/117182944/ac034919-c597-4307-b394-2c2e825f749f) Docker / Docker Hub
-
-
+* MiXCR (Version 4.6)
+* Nextflow (Version 23.04.2, DSL2 enabled)
+* R (Version 4.3.0)
+* Docker / Docker Hub
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+bcRflow utilizes nf-core configurations for wide availability to run on multiple institutional computing resources and cloud-based utilities like AWS. For additional information on available configurations and how to use them, see: https://nf-co.re/configs. Users must install Nextflow, Docker or Singularity, and squashfs-tools (for building the Singularity container in a linux environment). All other software dependencies are handled behind the scenes with our preocompiled Docker container. Users must generate a unique academic MiXCR license in order to run MiXCR, see https://mixcr.com/mixcr/getting-started/milm/ for details. 
 
 ### Prerequisites
 * Nextflow >= 23.04.2
@@ -135,7 +130,7 @@ To get a local copy up and running follow these simple example steps.
 
 ### Installation
 
-1. Get a free MiXCR Academic License at [https://licensing.milaboratories.com/](https://licensing.milaboratories.com/)
+1. Get a free MiXCR Academic License at [https://licensing.milaboratories.com/](https://licensing.milaboratories.com/), and activate the license.
 2. Clone the repo
    ```sh
    git clone https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow.git
@@ -226,8 +221,6 @@ Don't forget to give the project a star! Thanks again!
 Distributed under the MIT License. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTACT -->
 ## Contact
