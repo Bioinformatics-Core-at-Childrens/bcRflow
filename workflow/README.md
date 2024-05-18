@@ -190,7 +190,7 @@ bcRflow utilizes nf-core configurations for wide availability to run on multiple
     - [ ] Variable Gene Usage (IGH-V and IGH-V/J pairs)
     - [ ] Somatic Hypermutation (MiXCR)
     - [ ] Class-Switch Recombination (BrepPhylo and DNApars)
-    - [ ] Convergent Clustering and Clonal Networks (Shared Clonal Sequencees)
+    - [ ] Convergent Clustering and Clonal Networks (identify shared clonal sequencees)
 
 See the [open issues](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues) for a full list of proposed features (and known issues).
 
