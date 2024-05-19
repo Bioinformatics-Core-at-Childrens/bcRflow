@@ -365,7 +365,7 @@ process downstream {
     cpus "$params.cpus"
     memory { 8.GB * task.attempt }
     time { 12.hour * task.attempt }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
 
     label 'downstream'
