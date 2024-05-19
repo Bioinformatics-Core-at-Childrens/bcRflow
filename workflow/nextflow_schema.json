@@ -60,8 +60,8 @@
                 },
                 "imgt": {
                     "type": "string",
-                    "enum": ["/ihome/drajasundaram/bts76/bcRflow/workflow/db/imgt.202214-2.sv8.json"],
-                    "default": "/ihome/drajasundaram/bts76/bcRflow/workflow/db/imgt.202214-2.sv8.json",
+                    "enum": ["./db/imgt.202214-2.sv8.json"],
+                    "default": "./db/imgt.202214-2.sv8.json",
                     "format": "file-path",
                     "fa_icon": "fas fa-bezier-curve",
                     "hidden": true,
@@ -69,7 +69,7 @@
                 },
                 "mixcr_license": {
                     "type": "string",
-                    "default":"I.eyJ2IjoxNjk2NDQ1NTYyLCJlIjoxNjk2NTMyMTU4LCJtIjoiODI2MTdkYjEtNDExNC00NDAxLWEzY2EtOGUyODIxNmNkMDY0IzA1M2EwNDliZjdhOWUzNjJhZTg2YjJhN2MzZjJhMDg4M2YyMGJhMTljNDQ5ZWYxNDY3MDU5YjU0YTEyYTkxMTYiLCJsIjoiRS1KVUNBRktPS1hOSFlYQ0pVVEREWkRUT1ZLU0pTQUNWUklJUFlLVkhPSExYR0JYU0UifQ==.CPECUVF.CVBhCSzk/S3XLEnIPhI0QnYFmVw+SccrlCAWnIDkF8IWzKGYdiQLXOScZeYaqu99yra8vOphGs2ibmqY64Jp4udxbTJMTu3JqA+jDIuH99I3bp3YO0jguEd3xaZSDUo0b7hPSyXKsYhKLIDSvGTOlNdWA09fdVi+M14cfBTRu6+KqvKV3L5s6F/Rpk0R4vel8tRqUbU5aLbnFV0wuglqd9EjZ+OtRnoMWZkrHIddv7C4TLikR3p+ISpJ4eUuQOjDJ9RkEzW1pHPxFoUDyUr3Fw6i0LWM/JZ3veAYcIYYLO3iWA4ADSR03HoO9w++ML0WoUktdCcR69g+o4oxonSTQA==",
+                    "default":"ENTER YOUR LICENSE",
                     "hidden": true,
                     "description": "MiXCR license key."
                 },
