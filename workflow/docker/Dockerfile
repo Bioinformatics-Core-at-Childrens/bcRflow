@@ -28,7 +28,6 @@ ARG R_DEPS="c( \
     'ade4', \
     'phylobase', \
     'NAIR', \
-    'immunarch', \
     'magrittr', \
     'purrr', \
     'circilize', \
@@ -60,4 +59,5 @@ RUN Rscript -e "devtools::install_github('fmichonneau/phylobase')"
 RUN Rscript -e "devtools::install_github('Fraternalilab/BrepPhylo',dependencies = TRUE)"
 RUN Rscript -e "devtools::install_github('omarwagih/ggseqlogo')"
 RUN Rscript -e "devtools::install_github('jokergoo/ComplexHeatmap')"
+RUN Rscript -e "devtools::install_github('immunomind/immunarch',dependencies = TRUE)"
 CMD ["R"]
