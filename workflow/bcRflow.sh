@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=<bcr-nextflow>
 #SBATCH -N 1 # Ensure that all cores are on one machine
-#SBATCH -t 0-12:00 #runtime in D-HH:MM
+#SBATCH -t 3-00:00 #runtime in D-HH:MM
 #SBATCH --cpus-per-task=4 # Request that ncpus be allocated per process.
-#SBATCH --mem=64G
+#SBATCH --mem=16G
 #SBATCH --output=./slurm_log/bcr-nf_%A.out
 #SBATCH -e ./slurm_log/bcr-nf_%A.err
 #SBATCH --mail-type=END
