@@ -44,9 +44,9 @@
     <br />
     <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow">View Demo</a>
     ·
-    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues">Report Bug</a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues">Report Bug</a>
     ·
-    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues">Request Feature</a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues">Request Feature</a>
   </p>
 </div>
 
@@ -70,7 +70,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#framework">Pipeline Framework</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -175,7 +175,7 @@ bcRflow utilizes nf-core configurations for wide availability to run on multiple
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ROADMAP -->
+<!-- FRAMEWORK -->
 ## Pipeline Framework
 
 - [ ] Nextflow Configuration and Submission
@@ -192,7 +192,7 @@ bcRflow utilizes nf-core configurations for wide availability to run on multiple
     - [ ] Class-Switch Recombination (BrepPhylo and DNApars)
     - [ ] Convergent Clustering and Clonal Networks (identify shared clonal sequencees)
 
-See the [open issues](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -252,7 +252,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [stars-shield]: https://img.shields.io/github/stars/bts76-pitt/bcRflow.svg?style=for-the-badge
 [stars-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/stargazers
 [issues-shield]: https://img.shields.io/github/issues/bts76-pitt/bcRflow.svg?style=for-the-badge
-[issues-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/issues
+[issues-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues
 [license-shield]: https://img.shields.io/github/license/bts76-pitt/bcRflow.svg?style=for-the-badge
 [license-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/blob/master/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
