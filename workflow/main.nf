@@ -15,15 +15,14 @@ bcRflow: RNASeq - BCR Pipeline
                                           
 ===================================
 
-The bcRflow pipeline was developed and is maintained by Brent T. Schlegel, Analyst at the Bioinformatics Core @ the UPMC Children's Hospital of Pittsburgh (2023).
-It was inspired by the work of Rubio et. al (A Nextflow pipeline for T-cell receptor repertoire reconstruction and analysis from RNA sequencing data,
-ImmunoInformatics,2022) and their subsequent MiXCR-based pipeline for extracting TCR repertoires from bulk RNA-seq data (https://github.com/ConesaLab/TCR_nextflow).
+Welcome to bcRflow! This pipeline extracts, aligns, and analyzes BCR repertoires from non-targeted RNA-sequencing data.
+The bcRflow pipeline was developed by Brent T. Schlegel and the team at the Bioinformatics Core @ the UPMC Children's Hospital of Pittsburgh.
 
 The use of MiXCR and IMGT in this pipeline are for strictly non-commerical, academic purposes.
 In order to obtain a non-commercial license to use MiXCR, please see: https://licensing.milaboratories.com/
 
-For inquiries or technical assistance, please open a new Issue on the bcRflow GitHub page.
-Any reproductions or publications utilizing this pipeline should attribute all proper credit for development to the Developer (see above).
+For inquiries or technical assistance, please open a new Issue on the bcRflow GitHub page (https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/).
+Any reproductions or publications utilizing this pipeline should attribute all proper credit for development to the Developers (see above).
 
 ===================================
 
