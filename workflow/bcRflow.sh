@@ -6,7 +6,7 @@
 #SBATCH --mem=16G
 #SBATCH --output=./slurm_log/bcr-nf_%A.out
 #SBATCH -e ./slurm_log/bcr-nf_%A.err
-#SBATCH --mail-type=END
+#SBATCH --mail-type=ALL
 #SBATCH --mail-user=your_email@sample.com
 
 unset TMPDIR
