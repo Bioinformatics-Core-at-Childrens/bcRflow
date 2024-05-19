@@ -106,9 +106,9 @@ workflow {
     */
     Channel.fromPath("${params.outdir}/MiXCR")                  // Input directory
       .combine(Channel.fromPath("${params.input}"))             // Reads file (.csv)
-      .combine(Channel.fromPath("${baseDir}/src/downstream.R"))   // Path to downstream.R
+      .combine(Channel.fromPath("${baseDir}/src/downstream.R")) // Path to downstream.R
       .combine(Channel.fromPath("${baseDir}/src/utils.R"))      // Path to utils.R
-      .map { outdir, input, downstreamScript, utilsScript ->      // Map to tuple
+      .map { outdir, input, downstreamScript, utilsScript ->    // Map to tuple
           tuple(outdir, input, downstreamScript, utilsScript)
       }                                                         
     .set { downstream_channel }
