@@ -170,9 +170,8 @@ process mixcr_refineTags{
 // Partial assembly for short reads, round 1:
 process mixcr_assemblePartial_1{
     cpus "$params.cpus"
-    memory { 2.GB * task.attempt }
-    time { 3.hour * task.attempt }
-
+    memory { 8.GB * task.attempt }
+    time { 12.hour * task.attempt }
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
 
@@ -205,9 +204,8 @@ process mixcr_assemblePartial_1{
 // Partial assembly for short reads, round 2:
 process mixcr_assemblePartial_2{
     cpus "$params.cpus"
-    memory { 2.GB * task.attempt }
-    time { 3.hour * task.attempt }
-
+    memory { 8.GB * task.attempt }
+    time { 12.hour * task.attempt }
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
 
@@ -240,9 +238,8 @@ process mixcr_assemblePartial_2{
 // Assemble partial assemblies into final assembly:
 process mixcr_assemble{
     cpus "$params.cpus"
-    memory { 2.GB * task.attempt }
-    time { 3.hour * task.attempt }
-
+    memory { 8.GB * task.attempt }
+    time { 12.hour * task.attempt }
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
 
@@ -278,9 +275,8 @@ process mixcr_assemble{
 // Assemble contigs:
 process mixcr_assembleContigs {
     cpus "$params.cpus"
-    memory { 2.GB * task.attempt }
-    time { 3.hour * task.attempt }
-
+    memory { 8.GB * task.attempt }
+    time { 12.hour * task.attempt }
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
 
@@ -314,7 +310,7 @@ process mixcr_assembleContigs {
 // Export clones to standardized format:
 process mixcr_exportClones {
     cpus "$params.cpus"
-    memory { 2.GB * task.attempt }
+    memory { 4.GB * task.attempt }
     time { 3.hour * task.attempt }
 
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
@@ -367,8 +363,10 @@ process mixcr_exportClones {
 // Downstream processing and figures using downstream:
 process downstream {
     cpus "$params.cpus"
-    time "$params.time"
-    memory "$params.memory"
+    memory { 8.GB * task.attempt }
+    time { 12.hour * task.attempt }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    maxRetries 3
 
     label 'downstream'
     tag "downstream"
