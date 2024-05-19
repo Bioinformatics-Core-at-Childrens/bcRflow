@@ -3,7 +3,7 @@ process mixcr_align_bulk{
     cpus "$params.cpus"
     memory { 8.GB * task.attempt }
     time { 12.hour * task.attempt }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     maxRetries 3
 
     tag "$SampleID"
@@ -44,7 +44,7 @@ process mixcr_align_10X_5p{
     cpus "$params.cpus"
     memory { 8.GB * task.attempt }
     time { 12.hour * task.attempt }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     maxRetries 3
 
     tag "$SampleID"
@@ -85,7 +85,7 @@ process mixcr_10X_3p_GEX{
     cpus "$params.cpus"
     memory { 8.GB * task.attempt }
     time { 12.hour * task.attempt }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     maxRetries 3
 
     tag "$SampleID"
@@ -172,7 +172,7 @@ process mixcr_assemblePartial_1{
     cpus "$params.cpus"
     memory { 8.GB * task.attempt }
     time { 12.hour * task.attempt }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     maxRetries 3
 
     tag "$SampleID"
@@ -206,7 +206,7 @@ process mixcr_assemblePartial_2{
     cpus "$params.cpus"
     memory { 8.GB * task.attempt }
     time { 12.hour * task.attempt }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     maxRetries 3
 
     tag "$SampleID"
@@ -240,7 +240,7 @@ process mixcr_assemble{
     cpus "$params.cpus"
     memory { 8.GB * task.attempt }
     time { 12.hour * task.attempt }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     maxRetries 3
 
     tag "$SampleID"
@@ -277,7 +277,7 @@ process mixcr_assembleContigs {
     cpus "$params.cpus"
     memory { 8.GB * task.attempt }
     time { 12.hour * task.attempt }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     maxRetries 3
 
     tag "$SampleID"
@@ -313,7 +313,7 @@ process mixcr_exportClones {
     memory { 4.GB * task.attempt }
     time { 3.hour * task.attempt }
 
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     maxRetries 3
 
     tag "$SampleID"
@@ -365,7 +365,7 @@ process downstream {
     cpus "$params.cpus"
     memory { 8.GB * task.attempt }
     time { 12.hour * task.attempt }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     maxRetries 3
 
     label 'downstream'
