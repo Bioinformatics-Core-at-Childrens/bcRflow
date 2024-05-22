@@ -411,22 +411,18 @@ for(i in 1:length(v_j_counts)){
   dev.off()
 }
 
+save.image("downstream.RData")
 #####################################################
 #Somatic Hyper Mutation (SHM):
 ## Calculate the number of mutations compared to Germline using Immunarch:
 ## Note: repGermline can only run on one thread - there's a known bug with the multithreading.
-
-shm_species <- "HomoSapiens"
-if (species == "mmu") {
-  shm_species <- "MusMusculus"
-}
 
 shm <- immdata$data %>%
   seqCluster(seqDist(immdata$data), .fixed_threshold = 3) %>%
   repGermline(.threads = 1) %>%
   repAlignLineage(.min_lineage_sequences = 2, .align_threads = 4, .nofail = TRUE) %>%
   repClonalFamily(.threads = 4, .nofail = TRUE) %>%
-  repSomaticHypermutation(.threads = 4, .nofail = TRUE, species = shm_species)
+  repSomaticHypermutation(.threads = 4, .nofail = TRUE)
 
 # Create an empty list to store the merged data frames of shm counts per sample:
 merged_list <- list()
@@ -605,7 +601,8 @@ imm_top.plt <- vis(imm_top, .by = "Group", .meta = immdata$meta) +
         panel.grid.minor = element_blank()) 
 imm_top.data <- imm_top.plt$data
 imm_top.data$Group <- factor(imm_top.data$Group)
-imm_top.plt$data %>% ggplot(aes(x = Grouping.var, y = Value, fill = Group)) +
+imm_top.plt$data %>% ggplot(aes(x = Grouping.var, y = Value, fill = Group)) + theme_classic(base_size = 20)+ 
+  scale_fill_manual(values = group_cols, name = "Group") +
 geom_bar(stat="identity", position = "dodge")
 
 tiff(
@@ -617,6 +614,9 @@ tiff(
   res = 300,
   units = "in"
 )
+imm_top.plt$data %>% ggplot(aes(x = Grouping.var, y = Value, fill = Group)) + theme_classic(base_size = 20)+ 
+  scale_fill_manual(values = group_cols, name = "Group") +
+  geom_bar(stat="identity", position = "dodge")
 dev.off()
 
 #####################################################
@@ -996,16 +996,31 @@ clusters <- table(network$Cluster)
 
 # Step 4: select all of the large clusters (>= 10 clones):
 clusters <- clusters[clusters >= 10]
+clusters <- clusters[order(clusters,decreasing = T)]
 network <- network[network$Cluster %in% names(clusters),]
 
-# Plot the large clusters (bar plot):
-network_clusters <- network %>% ggplot(aes(
-  x = reorder(Cluster, Cluster,
-              function(x)
-                - length(x)),
-  fill = group_id
-)) + geom_bar() +
-  scale_fill_manual(values = group_cols, name = "Group") + xlab("Cluster") + ylab("# Clones") + theme_classic2(base_size = 20)  +
+# Calculate cluster sizes and get the top 100 clusters
+top_clusters <- network %>%
+  group_by(Cluster) %>%
+  tally(sort = TRUE) %>%
+  top_n(50, n) %>%
+  pull(Cluster)
+
+# Filter the original data to include only the top 100 clusters
+network_top50 <- network %>%
+  filter(Cluster %in% top_clusters)
+
+# Plot the top 50 clusters (bar plot)
+network_clusters <- network_top50 %>%
+  ggplot(aes(
+    x = reorder(Cluster, Cluster, function(x) -length(x)),
+    fill = group_id
+  )) + 
+  geom_bar() +
+  scale_fill_manual(values = group_cols, name = "Group") + 
+  xlab("Cluster") + 
+  ylab("# Clones") + 
+  theme_classic2(base_size = 20) +
   theme(axis.text.x = element_text(angle = 75, hjust = 1)) +
   ggtitle("Global Clustering of Clonotypes", subtitle = "CDR3aa Levenshtein Distance, Sequence Similarity >= 0.7")
 
@@ -1023,7 +1038,7 @@ dev.off()
 
 # Step 5: Networks analysis of large clusters:
 # Split the data frame into groups based on the "Cluster" column
-cluster_groups <- network %>% 
+cluster_groups <- network_top50 %>% 
   group_split(Cluster)
 
 # Initialize an empty list to store network plots
@@ -1231,3 +1246,4 @@ dev.off()
 #####################################################
 # save the environment!
 save.image("downstream.RData")
+
