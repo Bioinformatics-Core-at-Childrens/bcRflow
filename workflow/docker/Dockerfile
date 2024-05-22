@@ -8,7 +8,8 @@ RUN apt-get update && \
     libglpk40 \
     pandoc \
     libcurl4-openssl-dev \
-    r-cran-curl
+    r-cran-curl \
+    clustalw
 
 # Install required R packages
 ARG R_DEPS="c( \
@@ -59,5 +60,5 @@ RUN Rscript -e "devtools::install_github('fmichonneau/phylobase')"
 RUN Rscript -e "devtools::install_github('Fraternalilab/BrepPhylo',dependencies = TRUE)"
 RUN Rscript -e "devtools::install_github('omarwagih/ggseqlogo')"
 RUN Rscript -e "devtools::install_github('jokergoo/ComplexHeatmap')"
-RUN Rscript -e "devtools::install_github('immunomind/immunarch',dependencies = TRUE)"
+RUN Rscript -e "devtools::install_github('immunomind/immunarch', ref='dev')"
 CMD ["R"]
