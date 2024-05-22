@@ -416,10 +416,6 @@ save.image("downstream.RData")
 #Somatic Hyper Mutation (SHM):
 ## Calculate the number of mutations compared to Germline using Immunarch:
 ## Note: repGermline can only run on one thread - there's a known bug with the multithreading.
-<<<<<<< HEAD
-
-=======
->>>>>>> 2aff410fc93a47958f5a75088102ffccec94d997
 shm <- immdata$data %>%
   seqCluster(seqDist(immdata$data), .fixed_threshold = 3) %>%
   repGermline(.threads = 1) %>%
