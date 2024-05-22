@@ -39,7 +39,7 @@
   <p align="center">
     A Computational Pipeline for the Comprehensive and Reproducible Analysis of B-Cell Receptor Repertoires from Non-Targeted Transcriptomic Data.
     <br />
-    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow">View Demo</a>
@@ -107,7 +107,7 @@ In order to obtain a non-commercial license to use MiXCR, please see: https://li
 <!-- GETTING STARTED -->
 ## Getting Started
 
-bcRflow utilizes nf-core configurations for wide availability to run on multiple institutional computing resources and cloud-based utilities like AWS. For additional information on available configurations and how to use them, see: https://nf-co.re/configs. Users must install Nextflow, Docker or Singularity, and squashfs-tools (for building the Singularity container in a linux environment). All other software dependencies are handled behind the scenes with our preocompiled Docker container. Users must generate a unique academic MiXCR license in order to run MiXCR, see https://mixcr.com/mixcr/getting-started/milm/ for details. 
+bcRflow utilizes nf-core configurations for wide availability to run on multiple institutional computing resources and cloud-based utilities like AWS. For additional information on available configurations and how to use them, see: https://nf-co.re/configs. Users must install Nextflow, Docker or Singularity, and squashfs-tools (for building the Singularity container in a linux environment). All other software dependencies are handled behind the scenes with our precompiled Docker container. Users must generate a unique academic MiXCR license in order to run MiXCR, see https://mixcr.com/mixcr/getting-started/milm/ for details. 
 
 ### Prerequisites
 * Nextflow >= 23.04.2
@@ -245,16 +245,16 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [Nextflow]: https://www.nextflow.io/
 [MiXCR]: https://mixcr.com/
-[contributors-shield]: https://img.shields.io/github/contributors/bts76-pitt/bcRflow.svg?style=for-the-badge
-[contributors-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/bts76-pitt/bcRflow.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/Bioinformatics-Core-at-Childrens/bcRflow.svg?style=for-the-badge
+[contributors-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Bioinformatics-Core-at-Childrens/bcRflow.svg?style=for-the-badge
 [forks-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/network/members
-[stars-shield]: https://img.shields.io/github/stars/bts76-pitt/bcRflow.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/Bioinformatics-Core-at-Childrens/bcRflow.svg?style=for-the-badge
 [stars-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/stargazers
-[issues-shield]: https://img.shields.io/github/issues/bts76-pitt/bcRflow.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/Bioinformatics-Core-at-Childrens/bcRflow.svg?style=for-the-badge
 [issues-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues
-[license-shield]: https://img.shields.io/github/license/bts76-pitt/bcRflow.svg?style=for-the-badge
-[license-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/blob/master/LICENSE
+[license-shield]: https://img.shields.io/github/license/Bioinformatics-Core-at-Childrens/bcRflow.svg?style=for-the-badge
+[license-url]: https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/brent-schlegel-539638173
 [product-screenshot]: images/screenshot.png
