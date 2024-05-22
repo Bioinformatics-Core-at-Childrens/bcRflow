@@ -365,7 +365,7 @@ process downstream {
     cpus "$params.cpus"
     memory { 16.GB * task.attempt }
     time { 12.hour }
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    errorStrategy { task.exitStatus in [1, 137, 138, 139, 140] ? 'retry' : 'terminate' } // broader error-handling due to nonspecific R error codes
     maxRetries 3
 
     label 'downstream'
