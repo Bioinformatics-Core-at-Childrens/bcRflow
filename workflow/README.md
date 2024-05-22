@@ -107,7 +107,7 @@ In order to obtain a non-commercial license to use MiXCR, please see: https://li
 <!-- GETTING STARTED -->
 ## Getting Started
 
-bcRflow utilizes nf-core configurations for wide availability to run on multiple institutional computing resources and cloud-based utilities like AWS. For additional information on available configurations and how to use them, see: https://nf-co.re/configs. Users must install Nextflow, Docker or Singularity, and squashfs-tools (for building the Singularity container in a linux environment). All other software dependencies are handled behind the scenes with our preocompiled Docker container. Users must generate a unique academic MiXCR license in order to run MiXCR, see https://mixcr.com/mixcr/getting-started/milm/ for details. 
+bcRflow utilizes nf-core configurations for wide availability to run on multiple institutional computing resources and cloud-based utilities like AWS. For additional information on available configurations and how to use them, see: https://nf-co.re/configs. Users must install Nextflow, Docker or Singularity, and squashfs-tools (for building the Singularity container in a linux environment). All other software dependencies are handled behind the scenes with our precompiled Docker container. Users must generate a unique academic MiXCR license in order to run MiXCR, see https://mixcr.com/mixcr/getting-started/milm/ for details. 
 
 ### Prerequisites
 * Nextflow >= 23.04.2
