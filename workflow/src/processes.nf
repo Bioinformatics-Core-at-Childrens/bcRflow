@@ -363,8 +363,8 @@ process mixcr_exportClones {
 // Downstream processing and figures using downstream:
 process downstream {
     cpus "$params.cpus"
-    memory { 8.GB * task.attempt }
-    time { 12.hour * task.attempt }
+    memory { 16.GB * task.attempt }
+    time { 12.hour }
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
     maxRetries 3
 
