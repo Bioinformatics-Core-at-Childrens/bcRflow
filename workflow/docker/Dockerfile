@@ -61,4 +61,5 @@ RUN Rscript -e "devtools::install_github('Fraternalilab/BrepPhylo',dependencies 
 RUN Rscript -e "devtools::install_github('omarwagih/ggseqlogo')"
 RUN Rscript -e "devtools::install_github('jokergoo/ComplexHeatmap')"
 RUN Rscript -e "devtools::install_github('immunomind/immunarch', ref='dev')"
+RUN apt-get update && apt-get install -y phylip
 CMD ["R"]
