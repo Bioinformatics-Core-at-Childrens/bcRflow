@@ -415,18 +415,12 @@ for(i in 1:length(v_j_counts)){
 #Somatic Hyper Mutation (SHM):
 ## Calculate the number of mutations compared to Germline using Immunarch:
 ## Note: repGermline can only run on one thread - there's a known bug with the multithreading.
-
-shm_species <- "HomoSapiens"
-if (species == "mmu") {
-  shm_species <- "MusMusculus"
-}
-
 shm <- immdata$data %>%
   seqCluster(seqDist(immdata$data), .fixed_threshold = 3) %>%
   repGermline(.threads = 1) %>%
   repAlignLineage(.min_lineage_sequences = 2, .align_threads = 4, .nofail = TRUE) %>%
   repClonalFamily(.threads = 4, .nofail = TRUE) %>%
-  repSomaticHypermutation(.threads = 4, .nofail = TRUE, species = shm_species)
+  repSomaticHypermutation(.threads = 4, .nofail = TRUE)
 
 # Create an empty list to store the merged data frames of shm counts per sample:
 merged_list <- list()
