@@ -17,6 +17,7 @@ library(dplyr)
 library(tidyr)
 library(vegan)
 library(fpc)
+library(ape)
 library(stringdist)
 library(NAIR)
 
