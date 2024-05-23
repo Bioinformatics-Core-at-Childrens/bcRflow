@@ -2,6 +2,7 @@
 library(ComplexHeatmap)
 library(viridisLite)
 library(colorRamp2)
+library(Biostrings)
 library(immunarch)
 library(BrepPhylo)
 library(magrittr)
