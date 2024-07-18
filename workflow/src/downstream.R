@@ -35,6 +35,18 @@ option_list <- list(
     help = "Path to sample metadata table [default %default]"
   ),
   make_option(
+    c("-d", "--downsample"),
+    type = "boolean",
+    default = False,
+    help = "Whether or not to downsample the data to the size of the smallest repertoire [default %default]"
+  ),
+  make_option(
+    c("-t", "--threshold"),
+    type = "double",
+    default = 0.7,
+    help = "Sequence similarity threshold for clonal clustering [default %default]"
+  ),
+  make_option(
     c("-o", "--output_dir"),
     type = "character",
     default = file.path("./immunarch"),
@@ -989,7 +1001,7 @@ network_dist <-
   )
 
 # Step 3: Cluster the grouped CDR3 sequences
-network_clust <- seqCluster(list("network"=data), network_dist, .perc_similarity = 0.7)
+network_clust <- seqCluster(list("network"=data), network_dist, .perc_similarity = arguments$threshold)
 network <- network_clust$network
 clusters <- table(network$Cluster)
 
@@ -1108,7 +1120,7 @@ distBCR <-
   )
 
 #clustering BCR by CDR3 regions (to summarize across groups for CSR calculation)
-clustBCR <- seqCluster(data_split, distBCR, .perc_similarity = 0.6)
+clustBCR <- seqCluster(data_split, distBCR, .perc_similarity = arguments$threshold)
 
 #merge the clustered clonotypes into one dataframe:
 clones <- do.call(rbind, clustBCR)
