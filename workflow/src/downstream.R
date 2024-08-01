@@ -36,8 +36,8 @@ option_list <- list(
   ),
   make_option(
     c("-d", "--downsample"),
-    type = "boolean",
-    default = False,
+    type = "character",
+    default = "TRUE",
     help = "Whether or not to downsample the data to the size of the smallest repertoire [default %default]"
   ),
   make_option(
@@ -54,6 +54,7 @@ option_list <- list(
   )
 )
 arguments <- parse_args(OptionParser(option_list = option_list))
+arguments$downsample <- as.logical(arguments$downsample)
 
 # argument handling:
 species <- arguments$species
@@ -78,13 +79,6 @@ if (!dir.exists(outdir)) {
   print("Output directory already exists...")
 }
 setwd(outdir)
-
-# reformatted dir for reshaped MiXCR output:
-if (!dir.exists(file.path("./reformatted"))){
-  dir.create(file.path("./reformatted"), showWarnings = T)
-} else {
-  print("Reformatted directory already exists...")
-}
 
 # diversity dir for diversity metric figures:
 if (!dir.exists(file.path("./diversity"))){
@@ -123,6 +117,11 @@ colnames(imm.meta) <-  c("Sample", "Group")
 rownames(imm.meta) <- imm.meta$Sample
 imm.meta <- imm.meta[names(immdata$data),]
 immdata$meta <- tibble(imm.meta)
+
+if(arguments$downsample){
+  immdata <- repSample(immdata,
+                       .method = "downsample")
+}
 
 # #sample order for plots (custom for manuscript):
 # plot_order <- c("Healthy","Exposed","Mild","Severe")
@@ -429,7 +428,7 @@ save.image("downstream.RData")
 ## Calculate the number of mutations compared to Germline using Immunarch:
 ## Note: repGermline can only run on one thread - there's a known bug with the multithreading.
 shm <- immdata$data %>%
-  seqCluster(seqDist(immdata$data)) %>%
+  seqCluster(seqDist(immdata$data), .fixed_threshold = 3) %>%
   repGermline(.threads = 1) %>%
   repAlignLineage(.min_lineage_sequences = 2, .align_threads = 4, .nofail = TRUE) %>%
   repClonalFamily(.threads = 4, .nofail = TRUE) %>%
@@ -775,7 +774,7 @@ cpk_plt
 
 # Pielou evenness- vegan package
 Pielou <- function(.data){
-  mtx <- .data[,c("Clone.ID","Clones")] %>% pivot_wider(names_from = "Clone.ID", values_from = "Clones")
+  mtx <- .data[,c("Clone.ID","Clones")] %>% pivot_wider(names_from = "Clone.ID", values_from = "Clones", values_fn = sum)
   H <- diversity(mtx)
   J <- H/log(specnumber(mtx))
 }
@@ -812,7 +811,7 @@ Pielou_plt
 # ACE index - vegan package:
 ACE <- function(.data) {
   mtx <-
-    .data[, c("Clone.ID", "Clones")] %>% pivot_wider(names_from = "Clone.ID", values_from = "Clones")
+    .data[, c("Clone.ID", "Clones")] %>% pivot_wider(names_from = "Clone.ID", values_from = "Clones", values_fn = sum)
   ACE.idx <- estimateR(round(mtx)) %>% t() %>% data.frame()
   return(ACE.idx)
 }
@@ -851,7 +850,7 @@ ACE_plt
 
 # Shannon index - vegan package:
 Shannon <- function(.data){
-  mtx <- .data[,c("Clone.ID","Clones")] %>% pivot_wider(names_from = "Clone.ID", values_from = "Clones")
+  mtx <- .data[,c("Clone.ID","Clones")] %>% pivot_wider(names_from = "Clone.ID", values_from = "Clones", values_fn = sum)
   H <- diversity(mtx)
   return(H)
 }
@@ -1049,7 +1048,7 @@ dev.off()
 
 # Step 5: Networks analysis of large clusters:
 # Split the data frame into groups based on the "Cluster" column
-cluster_groups <- network_top50 %>% 
+cluster_groups <- network_top50 %>%
   group_split(Cluster)
 
 # Initialize an empty list to store network plots
@@ -1060,41 +1059,70 @@ for (i in seq_along(cluster_groups)) {
   # Get the current cluster data
   cluster_data <- cluster_groups[[i]]
   
-  # Calculate the Levenshtein distance matrix for the current cluster
-  dist_matrix <- calculate_distance_matrix(cluster_data) 
+  # Check the structure of cluster_data
+  print(str(cluster_data))
   
-  # Create a graph from the distance matrix
-  g <- graph_from_adjacency_matrix(dist_matrix, mode = "min", weighted = TRUE)
-  
-  # Assign colors to nodes based on group membership
-  node_colors <- group_cols[cluster_data$group_id]
-  
-  kmer_plot <-
-    getKmers(cluster_data, .k = str_length(cluster_data$CDR3.aa[1])) %>%
-    kmer_profile(.method = "prob") %>%
-    vis(.plot = "seq") +
-    theme_bw(base_size = 20) +
-    theme(panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank()) +
-    scale_y_continuous(labels = scales::percent) + ggtitle(unique(cluster_data$Cluster))
-  
-  # Plot the graph with colored nodes
-  tiff(paste0("./network/Cluster_",gsub("[[:punct:]]", "_", unique(cluster_data$Cluster)),".tiff"), width = 8, height = 8, units = "in", res =300, compression = "lzw")
-  plot(g, main = paste("Cluster", unique(cluster_data$Cluster)),vertex.color = node_colors,  edge.width = E(g)$weight, vertex.label = NA, cex.main = 20)
-  dev.off()
-  
-  #Plot the motif for the cluster:
-  tiff(paste0("./network/Cluster_",gsub("[[:punct:]]", "_", unique(cluster_data$Cluster)),"_kmers.tiff"), width = 10, height = 6, units = "in", res =300, compression = "lzw")
-  print(kmer_plot)
-  dev.off()
-  
-  # Add the graph to the list, named by the cluster
-  network_plots[[paste("Cluster", unique(cluster_data$Cluster))]] <- g
+  # Ensure that CDR3.aa and group_id columns are present and non-empty
+  if ("CDR3.aa" %in% colnames(cluster_data) && "group_id" %in% colnames(cluster_data) &&
+      nrow(cluster_data) > 0) {
+    
+    # Calculate the Levenshtein distance matrix for the current cluster
+    dist_matrix <- calculate_distance_matrix(cluster_data) 
+    
+    # Create a graph from the distance matrix
+    g <- graph_from_adjacency_matrix(dist_matrix, mode = "min", weighted = TRUE)
+    
+    # Assign colors to nodes based on group membership
+    node_colors <- group_cols[cluster_data$group_id]
+    
+    # Plot k-mer motif (assuming CDR3.aa contains sequences and getKmers function works correctly)
+    tryCatch({
+      # Code that might produce an error
+      kmer_plot <-
+        getKmers(cluster_data, .k = nchar(cluster_data$CDR3.aa[1])) %>%
+        kmer_profile(.method = "prob") %>%
+        vis(.plot = "seq") +
+        theme_bw(base_size = 20) +
+        theme(panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank()) +
+        scale_y_continuous(labels = scales::percent) + 
+        ggtitle(unique(cluster_data$Cluster))
+    }, error = function(e) {
+      # Do nothing on error
+    })
+    
+    # Plot the graph with colored nodes
+    tiff(paste0("./network/Cluster_", gsub("[[:punct:]]", "_", unique(cluster_data$Cluster)), ".tiff"), 
+         width = 8, height = 8, units = "in", res = 300, compression = "lzw")
+    plot(g, main = paste("Cluster", unique(cluster_data$Cluster)), vertex.color = node_colors, 
+         edge.width = E(g)$weight, vertex.label = NA, cex.main = 20)
+    dev.off()
+    
+    # Plot the motif for the cluster
+    tiff(paste0("./network/Cluster_", gsub("[[:punct:]]", "_", unique(cluster_data$Cluster)), "_kmers.tiff"), 
+         width = 10, height = 6, units = "in", res = 300, compression = "lzw")
+    if (exists("kmer_plot")) print(kmer_plot)
+    dev.off()
+    
+    # Add the graph to the list, named by the cluster
+    network_plots[[paste("Cluster", unique(cluster_data$Cluster))]] <- g
+  } else {
+    warning(paste("Cluster data for", unique(cluster_data$Cluster), "is missing 'CDR3.aa' or 'group_id' columns, or the cluster is empty."))
+  }
 }
 
 #####################################################
 
 #Class-Switch Recombination (CSR) w/ BrepPhylo:
+# bind samples into one data frame:
+data <- do.call(rbind, immdata$data)
+data$group_id <- imm.meta[data$sample_id, "Group"]
+data$group_id <- factor(data$group_id)
+
+# genes w/o mutations, just convert to NA:
+data[data == "region_not_covered"] <- NA
+
+# reshape data to include a column of Vgene name and allele for CSR calculation:
 data$CloneID <- data$Clone.ID
 data$CloneID <- paste(data$sample_id, data$CloneID, sep = "_")
 data$vgene_allele <- str_extract(data$V.name, ".+?(?=\\x28)")
@@ -1104,154 +1132,127 @@ data$dgene <- str_extract(data$D.name, ".+?(?=\\*)")
 data$jgene <- str_extract(data$J.name, ".+?(?=\\*)")
 
 #split data by group:
-data_split <- group_split(data, group_id, .keep = TRUE)
-names(data_split)  <- data$group_id %>% unique() %>% sort()
+data_split <- group_split(data, sample_id, .keep = TRUE)
+names(data_split)  <- data$sample_id %>% unique() %>% sort()
 
-##Clustering BCR clonotypes within groups based on CDR3 AA sequence using levenstein distance:
-#calculate distance
 distBCR <-
   seqDist(
     data_split,
-    .col = 'CDR3.aa',
+    .col = 'CDR3.nt',
     group_by_seqLength = FALSE,
-    .trim_genes = T,
     .method = 'lv',
-    .group_by = c('V.name')
+    .group_by = c('vgene_allele')
   )
 
 #clustering BCR by CDR3 regions (to summarize across groups for CSR calculation)
-clustBCR <- seqCluster(data_split, distBCR, .perc_similarity = arguments$threshold)
+clustBCR <- seqCluster(data_split, distBCR, .perc_similarity = 0.7)
 
-#merge the clustered clonotypes into one dataframe:
-clones <- do.call(rbind, clustBCR)
+clustBCR <- lapply(clustBCR, function(x){ 
+  #get only the aligned V-gene sequence for CSR calc:
+  x$V.seq <- substr(x$Sequence, 1, x$V.end)
+  return(x)})
 
-#get only the aligned V-gene sequence for CSR calc:
-clones$V.seq <- substr(clones$Sequence, 1, clones$V.end)
-
-#add unique ID to prevent overlap of cluster ids:
-clones[!is.na(clones$Cluster), "Cluster"] <-
-  paste0(clones[!is.na(clones$Cluster), "group_id"], "_", clones[!is.na(clones$Cluster), "Cluster"])
-clones <- clones[!is.na(clones$Cluster),]
-
-#subset to desired columns only:
-clones <-
-  clones[, c(
-    "Cluster",
-    "CloneID",
-    "sample_id",
-    "group_id",
-    "cgene",
-    "vgene",
-    "vgene_allele",
-    "CDR3.nt",
-    "Sequence",
-    "V.seq"
-  )]
-
-# note: dnapars is available w/ the BrepPhylo package, but only works with Linux!
-## TODO: detect user's system (linux, windows, etc. and change underlying arbo calc accordingly...)
-dnapars_executable <-
-  system.file("exe/dnapars", package = "BrepPhylo")
-outputFolder <- path.expand("./CSR_batchAnalysis")
-dir.create(outputFolder, showWarnings = TRUE)
-
-csr_species <- "Homo_sapiens"
-if (species == "mmu") {
-  csr_species <- "Mus_musculus"
-}
-clones <- clones[complete.cases(clones),]
-
-# extract IGH-C subclass:
-clones$Subclass <- str_replace(clones$cgene, "IGH", "")
-clones$Class <- clones$Subclass %>% gsub('[0-9.]', '', .)
-clones <- clones %>% data.frame()
-
-clones$Cluster <- clones$Cluster %>% str_replace_all("-", "_")
-
-# clonal lineage analysis:
-clones$CloneID <- clones$Cluster
-batch_results <- doBatchCloneAnalysis(
-  clones,
-  outputFolder = outputFolder,
-  species = csr_species,
-  IGHVgeneandallele_column = "vgene_allele", 
-  sequence_column = "V.seq",
-  plotFormat = "pdf",
-  label_column = "cgene",
-  phyloTreeType = "dnapars",
-  phyloTreeOptions = list("executable" = dnapars_executable),
-  useTempDir = TRUE,
-  minCloneSize = 3
-)
-# stop if BrepPhylo fails:
-if (length(unlist(batch_results)) == 0) {
-  save.image("downstream.RData")
-  stop(
-    "BrepPhylo was unable to perform clonal lineage analysis, likely due to a lack of clones.\nPlease see the saved .RData file in the output directory (downstream.RData)"
+CSR_calculation <- function(clones){
+  #add unique ID to prevent overlap of cluster ids:
+  clones[!is.na(clones$Cluster), "Cluster"] <-
+    paste0(clones[!is.na(clones$Cluster), "group_id"], "_",clones[!is.na(clones$Cluster), "sample_id"], "_", clones[!is.na(clones$Cluster), "Cluster"])
+  clones <- clones[!is.na(clones$Cluster),]
+  
+  #subset to desired columns only:
+  clones <-
+    clones[, c(
+      "Cluster",
+      "CloneID",
+      "sample_id",
+      "group_id",
+      "cgene",
+      "vgene",
+      "vgene_allele",
+      "CDR3.nt",
+      "Sequence",
+      "V.seq"
+    )]
+  
+  # note: dnapars is available w/ the BrepPhylo package, but only works with Linux!
+  ## TODO: detect user's system (linux, windows, etc. and change underlying arbo calc accordingly...)
+  dnapars_executable <-
+    system.file("exe/dnapars", package = "BrepPhylo")
+  outputFolder <- path.expand("./CSR_batchAnalysis")
+  dir.create(outputFolder, showWarnings = TRUE)
+  
+  csr_species <- "Homo_sapiens"
+  if (species == "mmu") {
+    csr_species <- "Mus_musculus"
+  }
+  clones <- clones[complete.cases(clones),]
+  
+  # extract IGH-C subclass:
+  clones$Subclass <- str_replace(clones$cgene, "IGH", "")
+  clones$Class <- clones$Subclass %>% gsub('[0-9.]', '', .)
+  clones <- clones %>% data.frame()
+  
+  clones$Cluster <- clones$Cluster %>% str_replace_all("-", "_")
+  
+  # clonal lineage analysis:
+  clones$CloneID <- clones$Cluster
+  batch_results <- doBatchCloneAnalysis(
+    clones,
+    outputFolder = outputFolder,
+    species = csr_species,
+    IGHVgeneandallele_column = "vgene_allele", cloneID_column = "Cluster",
+    sequence_column = "V.seq",
+    plotFormat = "pdf",
+    label_column = "cgene",
+    phyloTreeType = "dnapars",
+    phyloTreeOptions = list("executable" = dnapars_executable),
+    useTempDir = TRUE,
+    minCloneSize = 3
   )
+  return(batch_results)
 }
+batch_results_all <- lapply(clustBCR, CSR_calculation)
+batch_results_all <- batch_results_all[unlist(lapply(batch_results_all, function(x) length(unlist(x)) != 0))]
+batch_summaries_all <- lapply(batch_results_all, function(x){summary <- getSummaryFromBatch(x)
+return(summary$csr_events)})
+batch_summaries_all <- do.call(rbind, batch_summaries_all)
+batch_summaries_all$Group <- str_extract(batch_summaries_all$CloneID, ".+?(?=_)")
+csr_summary <- summariseCSR( batch_summaries_all, 
+                             dist_column = "distFromGermline", 
+                             cloneID_column = "CloneID",
+                             summarise_variables = "Group")
 
-# organize CSR events by Group metadata:
-batch_summary <- getSummaryFromBatch(batch_results)
-batch_summary.csr <- batch_summary$csr_events
-batch_summary.csr$Group <-
-  str_extract(batch_summary.csr$CloneID, ".+?(?=\\_)")
-
-# summarise for each clone the median germline distance
-# and place each clone in the distribution of this median-distance over all clones
-germlineDistance_summary <- summariseGermlineDistance( 
-  batch_summary.csr, dist_column = "distFromGermline", 
-  cloneID_column = "CloneID", 
-  summarise_variables = c( "Group", "CloneID" ) 
-)
-
-## we can plot this as a curve to show the overall distribution
-##library(ggplot2)
-#ggplot(germlineDistance_summary, aes(x = dist_median, y = clone_order, 
-#                                     group = Group, colour = Group)) +
-#  geom_line() + scale_colour_discrete(name = "") + cowplot::theme_cowplot() +
-#  xlab("median distance from germline") + ylab("clone percentile")
-
-#summarize CSR events:
-csr_summary <- summariseCSR(
-  batch_summary.csr,
-  dist_column = "distFromGermline",
-  cloneID_column = "CloneID",
-  summarise_variables = "Group"
-)
-
-#plot CSR events:
+# next we can plot a graphical summary
+# first set the order of the isotypes so that they reflect
+# the actual physical order on the genome (hence the 
+# order possible in CSR)
 csr_summary$startIsotype <- factor(csr_summary$startIsotype,
                                    levels = c("M", "D", "G3", "G1", "A1", "G2",
                                               "G4", "E", "A2"),
-                                   labels = c("M", "D","G3", "G1", "A1", "G2",
+                                   labels = c("M/D", "M/D", "G3", "G1", "A1", "G2",
                                               "G4", "E", "A2"))
-
 csr_summary$endIsotype <- factor(csr_summary$endIsotype,
                                  levels = c("M", "D", "G3", "G1", "A1", "G2",
                                             "G4", "E", "A2"),
-                                 labels = c("M", "D","G3", "G1", "A1", "G2",
+                                 labels = c("M/D", "M/D", "G3", "G1", "A1", "G2",
                                             "G4", "E", "A2"))
 
-csr_summary$Group <- factor(csr_summary$Group)
-CSR_plot <- plotCSRsummary(csr_summary) + facet_wrap( ~ Group) +
-  scale_fill_viridis_c(name = "mean distance\nfrom germline") +
-  ggtitle(label = "Class Switch Recombination", subtitle = "BrepPhylo")
-CSR_plot + theme_bw(base_size = 20) + theme(panel.grid.major = element_blank(),
-                                            panel.grid.minor = element_blank())
+# plot it; it uses ggplot2 so you can extend this with ggplot2 functions
+# here separate into different panels using the column 'Group'
+library(ggplot2)
+CSR_plot_per_pt <- plotCSRsummary(csr_summary) + facet_wrap(~ Group) & scale_fill_viridis_b()
 
 # save the CSR plot:
 tiff(
-  "CSR_events.tiff",
-  width = 9,
+  "CSR_events_per_pt.tiff",
+  width = 12,
   height = 8,
   units = "in",
   bg = "white",
   res = 300,
   compression = "lzw"
 )
-CSR_plot + theme_bw(base_size = 20) + theme(panel.grid.major = element_blank(),
-                                            panel.grid.minor = element_blank())
+CSR_plot_per_pt + theme_bw(base_size = 20) + theme(panel.grid.major = element_blank(),
+                                                   panel.grid.minor = element_blank())
 dev.off()
 
 #####################################################
