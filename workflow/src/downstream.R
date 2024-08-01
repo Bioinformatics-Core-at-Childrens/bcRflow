@@ -1152,64 +1152,7 @@ clustBCR <- lapply(clustBCR, function(x){
   x$V.seq <- substr(x$Sequence, 1, x$V.end)
   return(x)})
 
-CSR_calculation <- function(clones){
-  #add unique ID to prevent overlap of cluster ids:
-  clones[!is.na(clones$Cluster), "Cluster"] <-
-    paste0(clones[!is.na(clones$Cluster), "group_id"], "_",clones[!is.na(clones$Cluster), "sample_id"], "_", clones[!is.na(clones$Cluster), "Cluster"])
-  clones <- clones[!is.na(clones$Cluster),]
-  
-  #subset to desired columns only:
-  clones <-
-    clones[, c(
-      "Cluster",
-      "CloneID",
-      "sample_id",
-      "group_id",
-      "cgene",
-      "vgene",
-      "vgene_allele",
-      "CDR3.nt",
-      "Sequence",
-      "V.seq"
-    )]
-  
-  # note: dnapars is available w/ the BrepPhylo package, but only works with Linux!
-  ## TODO: detect user's system (linux, windows, etc. and change underlying arbo calc accordingly...)
-  dnapars_executable <-
-    system.file("exe/dnapars", package = "BrepPhylo")
-  outputFolder <- path.expand("./CSR_batchAnalysis")
-  dir.create(outputFolder, showWarnings = TRUE)
-  
-  csr_species <- "Homo_sapiens"
-  if (species == "mmu") {
-    csr_species <- "Mus_musculus"
-  }
-  clones <- clones[complete.cases(clones),]
-  
-  # extract IGH-C subclass:
-  clones$Subclass <- str_replace(clones$cgene, "IGH", "")
-  clones$Class <- clones$Subclass %>% gsub('[0-9.]', '', .)
-  clones <- clones %>% data.frame()
-  
-  clones$Cluster <- clones$Cluster %>% str_replace_all("-", "_")
-  
-  # clonal lineage analysis:
-  clones$CloneID <- clones$Cluster
-  batch_results <- doBatchCloneAnalysis(
-    clones,
-    outputFolder = outputFolder,
-    species = csr_species,
-    IGHVgeneandallele_column = "vgene_allele", cloneID_column = "Cluster",
-    sequence_column = "V.seq",
-    plotFormat = "pdf",
-    label_column = "cgene",
-    phyloTreeType = "dnapars",
-    phyloTreeOptions = list("executable" = dnapars_executable),
-    useTempDir = TRUE,
-    minCloneSize = 3
-  )
-  return(batch_results)
-}
+# Run CSR calculation
 batch_results_all <- lapply(clustBCR, CSR_calculation)
 batch_results_all <- batch_results_all[unlist(lapply(batch_results_all, function(x) length(unlist(x)) != 0))]
 batch_summaries_all <- lapply(batch_results_all, function(x){summary <- getSummaryFromBatch(x)
