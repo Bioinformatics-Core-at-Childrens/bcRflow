@@ -1,0 +1,8 @@
+# 2024-08-01 01:41:06 PM Parameters of function call "cloneLineage()"
+species: "Homo_sapiens"
+minCloneSize: "3"
+sequenceColumn: "V.seq"
+cloneIdColumn: "Cluster"
+germlineIdColumn: "vgene_allele"
+labelColumn: "cgene"
+algorithm: "ClustalOmega"

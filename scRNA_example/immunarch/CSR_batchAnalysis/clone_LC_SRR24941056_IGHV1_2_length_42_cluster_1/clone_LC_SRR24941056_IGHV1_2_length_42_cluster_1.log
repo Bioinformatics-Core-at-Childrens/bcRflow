@@ -1,0 +1,4 @@
+# 2024-08-01 01:41:02 PM Calculation commenced
+# 2024-08-01 01:41:02 PM Wrote clone LC_SRR24941056_IGHV1_2_length_42_cluster_1 out (dimensions: 3x12)
+# 2024-08-01 01:41:02 PM Use Homo_sapiens germline "IGHV1-2*02": caggtgcagctggtgcagtctggggctgaggtgaagaagcctggggcctcagtgaaggtctcctgcaaggcttctggatacaccttcaccggctactatatgcactgggtgcgacaggcccctggacaagggcttgagtggatgggatggatcaaccctaacagtggtggcacaaactatgcacagaagtttcagggcagggtcaccatgaccagggacacgtccatcagcacagcctacatggagctgagcaggctgagatctgacgacacggccgtgtattactgtgcgagaga
+# 2024-08-01 01:41:02 PM Skipped clone LC_SRR24941056_IGHV1_2_length_42_cluster_1 since the specified parameter "labelColumn" does not have unique identifiers.

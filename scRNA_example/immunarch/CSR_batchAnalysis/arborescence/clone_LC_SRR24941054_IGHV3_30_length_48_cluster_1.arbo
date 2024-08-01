@@ -1,0 +1,4 @@
+"startID","endID","weight","startLabel","endLabel"
+1,2,0.7148,"IGHV3-30*01","IGHM"
+2,4,0.0503,"IGHM","IGHA1"
+4,3,0.0369,"IGHA1","IGHG2"
