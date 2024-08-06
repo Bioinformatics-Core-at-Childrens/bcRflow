@@ -8,7 +8,7 @@
 <h3 align="center">bcRflow</h3>
 
   <p align="center">
-    A Computational Pipeline for the Comprehensive and Reproducible Analysis of B-Cell Receptor Repertoires from Non-Targeted Transcriptomic Data.
+    A Nextflow Pipeline for Characterizing B-cell Receptor Repertoires from Non-targeted Transcriptomic Data
     <br />
     <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow"><strong>Explore the docs »</strong></a>
     <br />
