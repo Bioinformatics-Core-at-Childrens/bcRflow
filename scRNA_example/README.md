@@ -13,8 +13,6 @@
     <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow">View Demo</a>
-    ·
     <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues">Report Bug</a>
     ·
     <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues">Request Feature</a>
