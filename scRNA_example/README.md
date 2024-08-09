@@ -27,6 +27,7 @@ __Sample Data__
 *  This single-cell case study compares Long COVID (LC) to non-Long COVID (Non-LC) patients, utilizing 10X 5’ GEX data generated from a multi-omic study (1) on adaptive T-cell mediated immune response in long COVID cases, sourced from GEO under accession number GSE235050.
 *  SRA Accession Numbers are provided, and can be downloaded via the sra-toolkit "fastq-dump" utility:
   ```bash
+  module load sra-toolkit/3.0.2
   names=($(cat SRR_Acc_List.txt))
   echo ${names[${SLURM_ARRAY_TASK_ID}]}
   
