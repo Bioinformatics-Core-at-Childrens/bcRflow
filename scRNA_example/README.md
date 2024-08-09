@@ -31,7 +31,8 @@ __Sample Data__
 __Upstream Processing__
 * Sample metadata is available in the samplesList.csv file
 * MiXCR heavy-chain clones are exported in the MiXCR directory
-* The Nextflow configuration file is provided, with all applicable parameters listed
+* The Nextflow configuration file is provided, with all applicable parameters listed in the nextflow.config file
+* An example Slurm script is provided as an example to run bcRflow on single-cell data using a Slurm-based HPC cluster
 
 __Downstream Analysis__
 * Results of the downstream analysis can be found in the immunarch directory
