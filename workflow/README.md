@@ -178,7 +178,7 @@ bcRflow utilizes nf-core configurations for wide availability to run on multiple
 <!-- FRAMEWORK -->
 ## Pipeline Framework
 
-![framework](db/Figure1.TIF)
+![framework](db/pipeline_framework.png)
 
 
 - [ ] Nextflow Configuration and Submission
