@@ -42,7 +42,7 @@
     <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow">View Demo</a>
+    <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/scRNA_example">View Demo</a>
     ·
     <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/issues">Report Bug</a>
     ·
