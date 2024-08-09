@@ -25,7 +25,19 @@ This is an example case-study for analyzing single-cell RNAseq data using bcRflo
 
 __Sample Data__
 *  This single-cell case study compares Long COVID (LC) to non-Long COVID (Non-LC) patients, utilizing 10X 5’ GEX data generated from a multi-omic study (1) on adaptive T-cell mediated immune response in long COVID cases, sourced from GEO under accession number GSE235050.
-*  SRA Accession Numbers are provided, and can be downloaded via the sra-toolkit "fastq-dump" utility
+*  SRA Accession Numbers are provided, and can be downloaded via the sra-toolkit "fastq-dump" utility:
+  ```bash
+  names=($(cat SRR_Acc_List.txt))
+  echo ${names[${SLURM_ARRAY_TASK_ID}]}
+  
+  outdir=./fastq
+  mkdir -pv $outdir
+  cd $outdir
+  
+  #fasterq-dump ${names[${SLURM_ARRAY_TASK_ID}]}
+  
+  fastq-dump --split-files --gzip ${names[${SLURM_ARRAY_TASK_ID}]}
+  ```
 *  Dataset is composed of 12 female Non-Long COVID (Non_LC) and 24 female Long COVID (LC) patients
 
 __Upstream Processing__
