@@ -26,5 +26,16 @@ This is an example case-study for analyzing single-cell RNAseq data using bcRflo
 __Sample Data__
 *  This single-cell case study compares Long COVID (LC) to non-Long COVID (Non-LC) patients, utilizing 10X 5’ GEX data generated from a multi-omic study (1) on adaptive T-cell mediated immune response in long COVID cases, sourced from GEO under accession number GSE235050.
 *  SRA Accession Numbers are provided, and can be downloaded via the sra-toolkit "fastq-dump" utility
+*  Dataset is composed of 12 female Non-Long COVID (Non_LC) and 24 female Long COVID (LC) patients
 
 __Upstream Processing__
+* Sample metadata is available in the samplesList.csv file
+* MiXCR heavy-chain clones are exported in the MiXCR directory
+* The Nextflow configuration file is provided, with all applicable parameters listed
+
+__Downstream Analysis__
+* Results of the downstream analysis can be found in the immunarch directory
+* Diversity metrics showed significant expansion and differentiation in LC compared to Non_LC patients
+* No exact clonal overlap was demonstrated between the cohorts, though there were a number of convergent clusters identified with > 70% sequence similarity
+* LC patients showed increased SHM rates compared to Non_LC
+* Two clusters from LC patients demonstrated CSR events, though this analysis was limited due to the low overall occurence of class switching. Results can be further explored in the CSR_batchAnalyis folder
