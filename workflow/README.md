@@ -163,8 +163,9 @@ bcRflow utilizes nf-core configurations for wide availability to run on multiple
    indir         = "/path/to/fastq" // path to FASTQ files
    outdir        = '/path/to/outdir/bcRflow-out' // path to desired output directory
    is_sc         = true //true if 10X 5' GEX samples, false if bulk
-   igmt          = './db/imgt.202214-2.sv8.json' // don't change this 
+   igmt          = './db/imgt.202214-2.sv8.json' // don't change this
    mixcr_license = 'ENTER YOUR LICENSE' //paste your MiXCR license here (the string, not the file path)
+   custom_config_base = '../configs/conf' // path to folder containing institutional configs
   ```
 
 * If using the Slurm workflow, adjust the script for your submission node accordingly, and submit:
