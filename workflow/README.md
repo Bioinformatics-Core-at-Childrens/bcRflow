@@ -177,6 +177,9 @@ bcRflow utilizes nf-core configurations for wide availability to run on multiple
 
 <!-- FRAMEWORK -->
 ## Pipeline Framework
+  <a href="https://github.com/Bioinformatics-Core-at-Childrens/bcRflow/tree/main/workflow">
+    <img src="Figure1.TIF" alt="pipeline framework" width="450" height="400">
+  </a>
 
 - [ ] Nextflow Configuration and Submission
 - [ ] MiXCR Alignment and Assembly
