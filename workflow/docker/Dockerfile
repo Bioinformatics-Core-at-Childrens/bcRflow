@@ -1,15 +1,23 @@
 FROM rocker/r-ver:4.3
-LABEL maintainer=" Brent T. Schlegel [bts76@pitt.edu]" \
-    description="Environment and dependencies for BCR Nextflow pipeline"
+LABEL maintainer="Brent T. Schlegel [bts76@pitt.edu]" \
+      description="Environment and dependencies for BCR Nextflow pipeline"
 
-# Install ps, for Nextflow. https://www.nextflow.io/docs/latest/tracing.html
+# Install ps, for Nextflow
 RUN apt-get update && \
-    apt-get install -y procps \
+    apt-get install -y \
+    procps \
     libglpk40 \
     pandoc \
     libcurl4-openssl-dev \
     r-cran-curl \
-    clustalw
+    clustalw \
+    python3-pip \
+    python3-venv
+
+# Install required Python packages
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install \
+    scipy
 
 # Install required R packages
 ARG R_DEPS="c( \
@@ -63,4 +71,8 @@ RUN Rscript -e "devtools::install_github('jokergoo/ComplexHeatmap')"
 RUN Rscript -e "devtools::install_github('immunomind/immunarch', ref='dev')"
 RUN apt-get update && apt-get install -y phylip
 RUN Rscript -e "install.packages('ape', clean=TRUE, dependencies=TRUE)"
+
+# Set up reticulate with the default virtual environment
+RUN Rscript -e "reticulate::virtualenv_create(envname = 'r-reticulate')"
+
 CMD ["R"]
