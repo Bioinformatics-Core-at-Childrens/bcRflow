@@ -118,6 +118,10 @@ rownames(imm.meta) <- imm.meta$Sample
 imm.meta <- imm.meta[names(immdata$data),]
 immdata$meta <- tibble(imm.meta)
 
+# save the environment:
+save.image("downstream.RData")
+
+# if downsample == TRUE, subset data to the size of the smallest repertoire
 if(arguments$downsample){
   immdata$data <- repSample(immdata$data,
                        .method = "downsample")
