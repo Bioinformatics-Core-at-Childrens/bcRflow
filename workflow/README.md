@@ -156,16 +156,18 @@ bcRflow utilizes nf-core configurations for wide availability to run on multiple
 
 * Edit the nextflow.config file:
   ```js
-   readsfile     = "/path/to/samplesList.csv" // path to sample metadata file
-   project_name  = "project_name"
-   species       = 'hsa' //species should be one of 'hsa' or 'mmu'
-   chain         = "IGH" //chain of interest (default of IGH)
-   indir         = "/path/to/fastq" // path to FASTQ files
-   outdir        = '/path/to/outdir/bcRflow-out' // path to desired output directory
-   is_sc         = true //true if 10X 5' GEX samples, false if bulk
-   igmt          = './db/imgt.202214-2.sv8.json' // don't change this 
-   mixcr_license = 'ENTER YOUR LICENSE' //paste your MiXCR license here (the string, not the file path)
-  ```
+    input     	  = "/path/to/samplesList.csv" // path to sample metadata file
+    project_name  = "project_name" // name your project
+    species       = 'hsa' // species should be one of 'hsa' or 'mmu'
+    chain         = "IGH" // chain of interest (default of IGH)
+    indir         = "/path/to/fastq" // path to FASTQ files
+    outdir        = '/path/to/outdir/bcRflow-out' // path to desired output directory
+    is_sc         = false // true if 10X 5' GEX samples, false if bulk
+    downsample    = false // whether or not to downsample the data to the size of the smallest repertoire
+    threshold     = 0.7 // sequence similarity threshold for clonal clustering (impacts downstream analyses)
+    imgt          = './db/imgt.202214-2.sv8.json' // don't change this 
+    mixcr_license = 'ENTER YOUR LICENSE' // paste your MiXCR license here (the string, not the file path)
+    custom_config_base = '../configs' // path to folder containing nf-core institutional configs (typically don't need to change)
 
 * If using the Slurm workflow, adjust the script for your submission node accordingly, and submit:
   ```sh
