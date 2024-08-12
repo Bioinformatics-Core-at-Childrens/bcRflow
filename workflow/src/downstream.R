@@ -119,7 +119,7 @@ imm.meta <- imm.meta[names(immdata$data),]
 immdata$meta <- tibble(imm.meta)
 
 if(arguments$downsample){
-  immdata <- repSample(immdata,
+  immdata$data <- repSample(immdata$data,
                        .method = "downsample")
 }
 
