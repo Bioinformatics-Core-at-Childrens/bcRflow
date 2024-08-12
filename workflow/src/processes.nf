@@ -364,7 +364,7 @@ process mixcr_exportClones {
 process downstream {
     cpus "$params.cpus"
     memory { 16.GB * task.attempt }
-    time { 12.hourour }
+    time { 12.hour }
     errorStrategy { task.exitStatus in [1, 137, 138, 139, 140] ? 'retry' : 'terminate' } // broader error-handling due to nonspecific R error codes
     maxRetries 3
 
