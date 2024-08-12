@@ -36,7 +36,10 @@ Project parameters:
 - Input Directory       : ${params.indir}
 - Output Directory      : ${params.outdir}
 - Single Cell?          : ${params.is_sc}
+- Downsampled?          : ${params.downsample}
+- Clustering Threshold  : ${params.threshold}
 
+===================================
 """
 
 // Bulk RNAseq Workflow:
