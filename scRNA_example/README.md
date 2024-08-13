@@ -50,6 +50,6 @@ __Upstream Processing__
 __Downstream Analysis__
 * Results of the downstream analysis can be found in the immunarch directory
 * Diversity metrics showed significant expansion and differentiation in LC compared to Non_LC patients
-* No exact clonal overlap was demonstrated between the cohorts, though there were a number of large (n >= 10) convergent clusters identified with > 70% sequence similarity
+* No exact clonal overlap was demonstrated between the cohorts, though there were a number of large (n >= 10) convergent clusters identified with > 70% CDR3aa sequence similarity
 * LC patients showed increased SHM rates compared to Non_LC
 * Two clusters from LC patients demonstrated CSR events, though this analysis was limited due to the low overall occurence of class switching. Results can be further explored in the CSR_batchAnalyis folder
