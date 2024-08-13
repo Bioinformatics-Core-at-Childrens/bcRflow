@@ -39,7 +39,7 @@ __Sample Data__
   
   fastq-dump --split-files --gzip ${names[${SLURM_ARRAY_TASK_ID}]}
   ```
-*  Dataset is composed of 12 female Non-Long COVID (Non_LC) and 24 female Long COVID (LC) patients
+*  This sample dataset is composed of 12 female Non-Long COVID (Non_LC) and 24 female Long COVID (LC) patients
 
 __Upstream Processing__
 * Sample metadata is available in the samplesList.csv file
